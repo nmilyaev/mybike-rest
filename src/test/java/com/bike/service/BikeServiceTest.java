@@ -21,6 +21,7 @@ public class BikeServiceTest {
     @Test
     public void shouldGetAllBikes() {
         // given
+
         // when
         List<Bike> bikes = service.getAll();
 
@@ -35,6 +36,5 @@ public class BikeServiceTest {
         assertEquals(bike1.getMake(), bike2.getMake());
         assertEquals(bike1.getModel(), bike2.getModel());
         assertEquals(bike1.getWorth(), bike2.getWorth());
-
     }
 }

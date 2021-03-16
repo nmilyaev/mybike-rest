@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.util.UUID;
 
@@ -13,8 +16,11 @@ import java.util.UUID;
 @Setter
 @ToString
 @EqualsAndHashCode(of = {"id"})
+@Entity(name = "bike")
+@Table(name = "bike")
 public class Bike {
 
+    @Id
     UUID id;
     String make;
     String model;
