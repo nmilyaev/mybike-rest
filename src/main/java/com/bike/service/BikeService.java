@@ -1,6 +1,8 @@
 package com.bike.service;
 
 import com.bike.model.Bike;
+import com.bike.repository.BikeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -11,7 +13,13 @@ import java.util.UUID;
 @Service
 public class BikeService {
 
-    List<Bike> repository;
+    private final BikeRepository bikeRepository;
+    private List<Bike> repository;
+
+    @Autowired
+    public BikeService(BikeRepository bikeRepository) {
+        this.bikeRepository = bikeRepository;
+    }
 
     public List<Bike> getAll(){
         Bike bike1 = new Bike(UUID.randomUUID(), "Raleigh", "Pioneer", BigDecimal.valueOf(80.00));
@@ -19,5 +27,4 @@ public class BikeService {
         repository = Arrays.asList(bike1, bike2);
         return repository;
     }
-
 }
