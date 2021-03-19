@@ -28,7 +28,7 @@ public class BikeServiceTest {
         // given
 
         // when
-        List<Bike> bikes = service.getAll();
+        List<Bike> bikes = service.getList();
 
         //then
         Bike bike1 = new Bike(UUID.randomUUID(), "Raleigh", "Pioneer", BigDecimal.valueOf(80.00));
