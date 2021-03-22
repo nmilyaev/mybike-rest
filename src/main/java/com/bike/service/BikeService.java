@@ -36,4 +36,8 @@ public class BikeService {
     public Bike getById(UUID id) {
         return repository.stream().filter(b->b.getId().equals(id)).findFirst().orElse(null);
     }
+
+    public Bike addNewBike(Bike bike){
+        return bikeRepository.save(bike);
+    }
 }
