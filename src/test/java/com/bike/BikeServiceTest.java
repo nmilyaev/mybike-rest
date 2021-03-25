@@ -1,4 +1,4 @@
-package com.bike.service;
+package com.bike;
 
 import com.bike.model.Bike;
 import com.bike.repository.BikeRepository;
@@ -11,6 +11,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
 
+import com.bike.service.BikeService;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-public class BikeServiceTest {
+class BikeServiceTest {
 
     @Mock
     BikeRepository bikeRepository;
@@ -40,7 +41,7 @@ public class BikeServiceTest {
     }
 
     @Test
-    public void shouldGetAllBikes() {
+    void shouldGetAllBikes() {
         // given
         given(bikeRepository.findAll()).willReturn(bikes);
 
@@ -55,7 +56,7 @@ public class BikeServiceTest {
     }
 
     @Test
-    public void shouldGetBikeById() {
+    void shouldGetBikeById() {
         // given
         UUID bikeId = bikes.get(0).getId();
         given(bikeRepository.getOne(bikeId)).willReturn(bikes.get(0));
@@ -69,17 +70,15 @@ public class BikeServiceTest {
     }
 
     @Test
-    public void shouldCreateNewBike() {
+    void shouldCreateNewBike() {
         // given
         UUID bikeId = UUID.randomUUID();
         Bike bike3 = new Bike(bikeId, "Claud Butler", "Echelon", BigDecimal.valueOf(180.00));
-        given(bikeRepository.save(bike3)).will(new Answer() {
-            public Object answer(InvocationOnMock invocation) {
-                Object[] args = invocation.getArguments();
-                Bike bike = (Bike) args[0];
-                bikes.add(bike);
-                return bike;
-            }
+        given(bikeRepository.save(bike3)).will((Answer) invocation -> {
+            Object[] args = invocation.getArguments();
+            Bike bike = (Bike) args[0];
+            bikes.add(bike);
+            return bike;
         });
 
         // when
@@ -90,7 +89,6 @@ public class BikeServiceTest {
         assertBikesTheSame(bike3, bikes.get(2));
         assertBikesTheSame(bike, bikes.get(2));
     }
-
 
     private void assertBikesTheSame(Bike bike1, Bike bike2) {
         assertEquals(bike1.getMake(), bike2.getMake());

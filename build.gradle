@@ -1,36 +1,66 @@
 plugins {
-	id 'org.springframework.boot' version '2.4.3'
-	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-	id 'java'
+    id 'org.springframework.boot' version '2.4.3'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
 }
 
-group = 'com.bike'
+group = 'java.bike'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '8'
 
+sourceSets {
+    main {
+        java.srcDirs('./src/main/java')
+        resources.srcDirs('./src/main/resources')
+    }
+    test {
+        java.srcDirs('./src/test/java')
+        resources.srcDirs('./src/test/resources')
+    }
+    integration {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+        java.srcDirs('./src/integration/java')
+        resources.srcDirs('./src/integration/resources')
+    }
+}
+
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    integrationImplementation.extendsFrom testImplementation
+    integrationRuntimeOnly.extendsFrom testRuntimeOnly
+}
+
+task integrationTest(type: Test) {
+    description = 'Runs the integration tests.'
+    group = 'verification'
+    testClassesDirs = sourceSets.integration.output.classesDirs
+    classpath = sourceSets.integration.runtimeClasspath
+    outputs.upToDateWhen { false }
+    // This is not needed, but I like to see which tests have run
+    testLogging { events "passed", "skipped", "failed" }
+    // mustRunAfter test
+}
+
+tasks.withType(Test) {
+    useJUnitPlatform()
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compileOnly 'org.projectlombok:lombok'
-	compile 'org.flywaydb:flyway-core'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'org.postgresql:postgresql'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok'
+    compile 'org.flywaydb:flyway-core'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'org.postgresql:postgresql'
 //    runtime('com.h2database:h2')
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.assertj:assertj-core'
-}
-
-test {
-	useJUnitPlatform()
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.assertj:assertj-core'
 }
