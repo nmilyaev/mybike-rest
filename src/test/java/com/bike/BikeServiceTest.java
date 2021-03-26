@@ -3,6 +3,7 @@ package com.bike;
 import com.bike.model.Bike;
 import com.bike.repository.BikeRepository;
 import com.bike.service.BikeService;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +20,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 
+@Slf4j
 @ExtendWith(MockitoExtension.class)
 class BikeServiceTest {
 
@@ -37,6 +39,7 @@ class BikeServiceTest {
         Bike bike2 = new Bike(UUID.randomUUID(), "Dawes", "Galaxy", BigDecimal.valueOf(100.00));
         bikes.add(bike1);
         bikes.add(bike2);
+        log.info(bikes.toString());
     }
 
     @Test
