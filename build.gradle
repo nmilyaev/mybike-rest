@@ -2,6 +2,7 @@ plugins {
     id 'org.springframework.boot' version '2.4.3'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
+//    id 'idea'
 }
 
 group = 'java.bike'
@@ -17,17 +18,17 @@ sourceSets {
         java.srcDirs('./src/test/java')
         resources.srcDirs('./src/test/resources')
     }
-    integration {
-        compileClasspath += sourceSets.main.output
-        runtimeClasspath += sourceSets.main.output
-        java.srcDirs('./src/integration/java')
-        resources.srcDirs('./src/integration/resources')
+    integrationTest {
+        java.srcDirs('./src/integrationTest/java')
+        resources.srcDirs('./src/integrationTest/resources')
+        compileClasspath += main.output + test.output
+        runtimeClasspath += main.output + test.output
     }
 }
 
 configurations {
-    integrationImplementation.extendsFrom testImplementation
-    integrationRuntimeOnly.extendsFrom testRuntimeOnly
+    integrationTestCompile.extendsFrom testCompile
+    integrationTestRuntime.extendsFrom testRuntime
 }
 
 task integrationTest(type: Test) {
@@ -52,10 +53,13 @@ dependencies {
     compile 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
+    integrationTestAnnotationProcessor 'org.projectlombok:lombok'
     compile 'org.flywaydb:flyway-core'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'com.h2database:h2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    integrationTestImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.assertj:assertj-core'
+//    integrationTestImplementation 'org.assertj:assertj-core'
 }
