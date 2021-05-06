@@ -2,7 +2,7 @@ plugins {
     id 'org.springframework.boot' version '2.4.3'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
-//    id 'idea'
+    id 'idea'
 }
 
 group = 'java.bike'
@@ -18,48 +18,48 @@ sourceSets {
         java.srcDirs('./src/test/java')
         resources.srcDirs('./src/test/resources')
     }
-    integrationTest {
-        java.srcDirs('./src/integrationTest/java')
-        resources.srcDirs('./src/integrationTest/resources')
-        compileClasspath += main.output + test.output
-        runtimeClasspath += main.output + test.output
-    }
 }
+//    integrationTest {
+//        java.srcDirs('./src/integrationTest/java')
+//        resources.srcDirs('./src/integrationTest/resources')
+//        compileClasspath += main.output + test.output
+//        runtimeClasspath += main.output + test.output
+//    }
+//}
 
-configurations {
-    integrationTestCompile.extendsFrom testCompile
-    integrationTestRuntime.extendsFrom testRuntime
-}
-
-task integrationTest(type: Test) {
-    description = 'Runs the integration tests.'
-    group = 'verification'
-    outputs.upToDateWhen { false }
-    testLogging { events "passed", "skipped", "failed" } // This is not needed, but I like to see which tests have run
-    // mustRunAfter test
-}
-
-tasks.withType(Test) {
-    useJUnitPlatform()
-}
+//task integrationTest(type: Test) {
+//    description = 'Runs the integration tests.'
+//    group = 'verification'
+//    outputs.upToDateWhen { false }
+//    testLogging { events "passed", "skipped", "failed" } // This is not needed, but I like to see which tests have run
+////    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+////    classpath = sourceSets.integrationTest.runtimeClasspath
+//    // mustRunAfter test
+//}
 
 repositories {
     mavenCentral()
 }
 
+test {
+    systemProperty 'de.adesso.junitinsights.enabled', 'true'
+    systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
+    useJUnitPlatform()
+}
+
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+    compile 'org.springframework.boot:spring-boot-starter-web'
     compile 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
-    integrationTestAnnotationProcessor 'org.projectlombok:lombok'
     compile 'org.flywaydb:flyway-core'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'com.h2database:h2'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    integrationTestImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.assertj:assertj-core'
-//    integrationTestImplementation 'org.assertj:assertj-core'
+    testCompile 'org.springframework.boot:spring-boot-starter-test'
+    testCompile 'org.junit.jupiter:junit-jupiter'
+    testCompile 'org.springframework.data:spring-data-commons'
+//    testCompile 'org.springframework:spring-dao'
+    testCompile 'org.assertj:assertj-core'
+
+    annotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 }

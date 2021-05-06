@@ -1,4 +1,4 @@
-package com.bike;
+package com.bike.integration_test;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
