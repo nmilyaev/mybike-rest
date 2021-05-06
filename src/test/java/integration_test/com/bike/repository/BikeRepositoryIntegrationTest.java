@@ -1,10 +1,12 @@
-package com.bike.integration_test.sevice;
+package integration_test.com.bike.repository;
 
+import com.bike.BorrowMyBikeApplication;
 import com.bike.model.Bike;
-import com.bike.service.BikeService;
+import com.bike.repository.BikeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
@@ -14,16 +16,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Slf4j
-@SpringBootTest
-public class BikeServiceIntegrationTest {
-
+@SpringBootTest(classes = BorrowMyBikeApplication.class)
+public class BikeRepositoryIntegrationTest {
     @Autowired
-    BikeService service;
+    BikeRepository repository;
 
     @Test
     void shouldSaveBike() {
         Bike bike1 = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00));
-        Bike saved = service.addNewBike(bike1);
+        Bike saved = repository.save(bike1);
         assertNotNull(saved.getId());
         assertEquals(saved.getMake(), bike1.getMake());
         assertEquals(saved.getModel(), bike1.getModel());
@@ -33,11 +34,10 @@ public class BikeServiceIntegrationTest {
 
     @Test
     @Transactional
-        // else service.getById fails to lazy-load the bike
     void shouldSaveAndLoadBike() {
         Bike bike1 = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00));
-        Bike saved = service.addNewBike(bike1);
-        Bike loaded = service.getById(saved.getId());
+        Bike saved = repository.save(bike1);
+        Bike loaded = repository.getOne(saved.getId());
         assertNotNull(saved.getId());
         assertEquals(loaded.getMake(), bike1.getMake());
         assertEquals(loaded.getModel(), bike1.getModel());

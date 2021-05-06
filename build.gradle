@@ -18,14 +18,13 @@ sourceSets {
         java.srcDirs('./src/test/java')
         resources.srcDirs('./src/test/resources')
     }
-}
 //    integrationTest {
 //        java.srcDirs('./src/integrationTest/java')
 //        resources.srcDirs('./src/integrationTest/resources')
 //        compileClasspath += main.output + test.output
 //        runtimeClasspath += main.output + test.output
 //    }
-//}
+}
 
 //task integrationTest(type: Test) {
 //    description = 'Runs the integration tests.'

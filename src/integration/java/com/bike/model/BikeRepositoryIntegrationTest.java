@@ -1,4 +1,4 @@
-package com.bike.integration_test.model;
+package integration_test.model;
 
 import com.bike.repository.BikeRepository;
 import com.bike.service.BikeService;
@@ -27,11 +27,6 @@ public class BikeRepositoryIntegrationTest {
         Bike bike1 = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00));
         Bike bike2 = new Bike("Dawes", "Galaxy", BigDecimal.valueOf(100.00));
         Bike savedBike = service.addNewBike(bike1);
-        log.info("............UUID: {}", savedBike.id);
-
-//
-//        repository.save(bike1);
-
-
+        log.info("............UUID: {}", savedBike.getId());
     }
 }
