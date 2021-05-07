@@ -4,8 +4,11 @@ import com.bike.model.Bike;
 import com.bike.repository.BikeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,8 +27,14 @@ public class BikeService {
         return bikeRepository.findAll();
     }
 
-    public Bike getById(UUID id) {
-        return bikeRepository.getOne(id);
+    public Bike getById(UUID id) throws EntityNotFoundException {
+        Bike bike;
+        try {
+            bike = bikeRepository.getOne(id);
+        } catch (JpaObjectRetrievalFailureException ex) {
+            throw new EntityNotFoundException(ex.getCause().getMessage());
+        }
+        return bike;
     }
 
     public Bike addNewBike(Bike bike) {
@@ -34,15 +43,17 @@ public class BikeService {
 
     /**
      * Deletes a bike by id
+     *
      * @param bikeId - searched id
      * @return true or false depending on the success of the operation (i.e. whether the entry is found)
      */
     public boolean deleteBike(UUID bikeId) {
-        Bike bike = bikeRepository.getOne(bikeId);
-        if (bike ==null){
+        try {
+            bikeRepository.deleteById(bikeId);
+        }
+        catch (EmptyResultDataAccessException ex){
             return false;
         }
-        bikeRepository.deleteById(bikeId);
         return true;
     }
 }
