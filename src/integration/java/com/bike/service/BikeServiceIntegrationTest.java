@@ -1,8 +1,7 @@
-package integration_test.com.bike.sevice;
+package com.bike.service;
 
 import com.bike.BorrowMyBikeApplication;
 import com.bike.model.Bike;
-import com.bike.service.BikeService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,12 +1,10 @@
-package integration_test.com.bike.repository;
+package com.bike.repository;
 
-import com.bike.BorrowMyBikeApplication;
 import com.bike.model.Bike;
-import com.bike.repository.BikeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 
 import javax.transaction.Transactional;
@@ -15,7 +13,7 @@ import java.math.BigDecimal;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
-@SpringBootTest(classes = BorrowMyBikeApplication.class)
+@DataJpaTest
 public class BikeRepositoryIntegrationTest {
     @Autowired
     BikeRepository repository;
@@ -50,6 +48,6 @@ public class BikeRepositoryIntegrationTest {
         Bike saved = repository.save(bike1);
         repository.delete(saved);
         Throwable exception = assertThrows(JpaObjectRetrievalFailureException.class, () -> repository.getOne(saved.getId()));
-        assertEquals("Unable to find com.bike.model.Bike with id " + saved.getId(), exception.getCause().getMessage());
+        assertEquals("Unable to find Bike with id " + saved.getId(), exception.getCause().getMessage());
     }
 }

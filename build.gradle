@@ -18,32 +18,31 @@ sourceSets {
         java.srcDirs('./src/test/java')
         resources.srcDirs('./src/test/resources')
     }
-//    integrationTest {
-//        java.srcDirs('./src/integrationTest/java')
-//        resources.srcDirs('./src/integrationTest/resources')
-//        compileClasspath += main.output + test.output
-//        runtimeClasspath += main.output + test.output
-//    }
+    integrationTest {
+        java {
+            compileClasspath += main.output + test.output
+            runtimeClasspath += main.output + test.output
+            srcDir file('src/integration/java')
+        }
+        resources.srcDirs('./src/integration/resources')
+    }
 }
 
-//task integrationTest(type: Test) {
-//    description = 'Runs the integration tests.'
-//    group = 'verification'
-//    outputs.upToDateWhen { false }
-//    testLogging { events "passed", "skipped", "failed" } // This is not needed, but I like to see which tests have run
-////    testClassesDirs = sourceSets.integrationTest.output.classesDirs
-////    classpath = sourceSets.integrationTest.runtimeClasspath
-//    // mustRunAfter test
-//}
+task integrationTest(type: Test) {
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+    //If you want to ensure that integration tests are run every time when you invoke
+    //this task, uncomment the following line.
+    //outputs.upToDateWhen { false }
+}
 
 repositories {
     mavenCentral()
 }
 
-test {
-    systemProperty 'de.adesso.junitinsights.enabled', 'true'
-    systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
+tasks.withType(Test) {
     useJUnitPlatform()
+    jvmArgs '--enable-preview'
 }
 
 dependencies {
@@ -52,12 +51,19 @@ dependencies {
     compile 'org.projectlombok:lombok'
     compile 'org.flywaydb:flyway-core'
     runtimeOnly 'org.postgresql:postgresql'
-    runtimeOnly 'com.h2database:h2'
+    testRuntimeOnly 'com.h2database:h2'
     testCompile 'org.springframework.boot:spring-boot-starter-test'
-    testCompile 'org.junit.jupiter:junit-jupiter'
+    testCompile 'org.junit.jupiter:junit-jupiter:5.7.1'
     testCompile 'org.springframework.data:spring-data-commons'
-//    testCompile 'org.springframework:spring-dao'
     testCompile 'org.assertj:assertj-core'
+
+    integrationTestCompile sourceSets.main.output
+    integrationTestCompile sourceSets.test.output
+    integrationTestCompile configurations.compile
+    integrationTestCompile configurations.testCompile
+    integrationTestRuntime configurations.runtime
+    integrationTestRuntime configurations.testRuntimeOnly
+    integrationTestAnnotationProcessor configurations.testAnnotationProcessor
 
     annotationProcessor 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
