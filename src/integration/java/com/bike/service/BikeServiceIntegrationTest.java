@@ -12,6 +12,7 @@ import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
@@ -23,12 +24,12 @@ public class BikeServiceIntegrationTest {
 
     @Test
     void shouldSaveBike() {
-        Bike bike1 = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00));
-        Bike saved = service.addNewBike(bike1);
+        Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00));
+        Bike saved = service.addNewBike(bike);
         assertNotNull(saved.getId());
-        assertEquals(saved.getMake(), bike1.getMake());
-        assertEquals(saved.getModel(), bike1.getModel());
-        assertEquals(saved.getWorth(), bike1.getWorth());
+        assertThat(saved)
+                .usingRecursiveComparison()
+                .isEqualTo(bike);
         log.info("............UUID: {}", saved.getId());
     }
 
@@ -36,13 +37,13 @@ public class BikeServiceIntegrationTest {
     @Transactional
         // else service.getById fails to lazy-load the bike
     void shouldSaveAndLoadBike() {
-        Bike bike1 = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00));
-        Bike saved = service.addNewBike(bike1);
+        Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00));
+        Bike saved = service.addNewBike(bike);
         Bike loaded = service.getById(saved.getId());
         assertNotNull(saved.getId());
-        assertEquals(loaded.getMake(), bike1.getMake());
-        assertEquals(loaded.getModel(), bike1.getModel());
-        assertEquals(loaded.getWorth(), bike1.getWorth());
+        assertThat(loaded)
+                .usingRecursiveComparison()
+                .isEqualTo(bike);
     }
 
     @Test
@@ -67,8 +68,8 @@ public class BikeServiceIntegrationTest {
         assertFalse(success);
         Bike loaded = service.getById(bike.getId());
         assertNotNull(loaded.getId());
-        assertEquals(loaded.getMake(), bike.getMake());
-        assertEquals(loaded.getModel(), bike.getModel());
-        assertEquals(loaded.getWorth(), bike.getWorth());
+        assertThat(loaded)
+                .usingRecursiveComparison()
+                .isEqualTo(bike);
     }
 }

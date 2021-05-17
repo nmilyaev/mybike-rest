@@ -10,6 +10,7 @@ import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
@@ -20,32 +21,32 @@ public class BikeRepositoryIntegrationTest {
 
     @Test
     void shouldSaveBike() {
-        Bike bike1 = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00));
-        Bike saved = repository.save(bike1);
+        Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00));
+        Bike saved = repository.save(bike);
         assertNotNull(saved.getId());
-        assertEquals(saved.getMake(), bike1.getMake());
-        assertEquals(saved.getModel(), bike1.getModel());
-        assertEquals(saved.getWorth(), bike1.getWorth());
+        assertThat(saved)
+                .usingRecursiveComparison()
+                .isEqualTo(bike);
         log.info("............UUID: {}", saved.getId());
     }
 
     @Test
     @Transactional
     void shouldSaveAndLoadBike() {
-        Bike bike1 = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00));
-        Bike saved = repository.save(bike1);
+        Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00));
+        Bike saved = repository.save(bike);
         Bike loaded = repository.getOne(saved.getId());
         assertNotNull(saved.getId());
-        assertEquals(loaded.getMake(), bike1.getMake());
-        assertEquals(loaded.getModel(), bike1.getModel());
-        assertEquals(loaded.getWorth(), bike1.getWorth());
+        assertThat(saved)
+                .usingRecursiveComparison()
+                .isEqualTo(bike);
     }
 
     @Test
     @Transactional
     void shouldDeleteBike() {
-        Bike bike1 = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00));
-        Bike saved = repository.save(bike1);
+        Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00));
+        Bike saved = repository.save(bike);
         repository.delete(saved);
         Throwable exception = assertThrows(JpaObjectRetrievalFailureException.class, () -> repository.getOne(saved.getId()));
         assertEquals("Unable to find com.bike.model.Bike with id " + saved.getId(), exception.getCause().getMessage());
