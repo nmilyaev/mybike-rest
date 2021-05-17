@@ -48,6 +48,6 @@ public class BikeRepositoryIntegrationTest {
         Bike saved = repository.save(bike1);
         repository.delete(saved);
         Throwable exception = assertThrows(JpaObjectRetrievalFailureException.class, () -> repository.getOne(saved.getId()));
-        assertEquals("Unable to find Bike with id " + saved.getId(), exception.getCause().getMessage());
+        assertEquals("Unable to find com.bike.model.Bike with id " + saved.getId(), exception.getCause().getMessage());
     }
 }

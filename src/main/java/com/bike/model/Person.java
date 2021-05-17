@@ -38,4 +38,12 @@ public abstract class Person {
     private String email;
     @Column(name = "phone", length = 20)
     private String phone;
+
+    public Person(String firstname, String surname, String email) {
+        this.firstname = firstname;
+        this.surname = surname;
+        this.email = email;
+    }
 }
+
+

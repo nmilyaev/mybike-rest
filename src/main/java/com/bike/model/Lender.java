@@ -16,4 +16,11 @@ import java.util.UUID;
 @Table(name = "lender")
 public class Lender extends Person {
 
+    public static Lender createWithRequiredFields (String firstname, String surname, String email){
+        return new Lender(firstname, surname, email);
+    }
+
+    public Lender(String firstname, String surname, String email) {
+        super(firstname, surname, email);
+    }
 }

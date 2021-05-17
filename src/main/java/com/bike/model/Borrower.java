@@ -14,4 +14,12 @@ import javax.persistence.Table;
 @Table(name = "borrower")
 public class Borrower extends Person {
 
+    public static Borrower createWithRequiredFields (String firstname, String surname, String email){
+        return new Borrower(firstname, surname, email);
+    }
+
+    public Borrower(String firstname, String surname, String email) {
+        super(firstname, surname, email);
+    }
+
 }
