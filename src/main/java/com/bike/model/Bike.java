@@ -32,9 +32,9 @@ public class Bike {
     )
     @Column(name = "id", updatable = false, nullable = false)
     UUID id;
-    @Column(name = "make")
+    @Column(name = "make", length=100)
     String make;
-    @Column(name = "model")
+    @Column(name = "model", length=100)
     String model;
     @Column(name = "worth")
     BigDecimal worth;
