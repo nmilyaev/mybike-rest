@@ -1,7 +1,8 @@
 package com.bike.repository;
 
-import com.bike.model.Borrower;
+import com.bike.model.MybikeUser;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -14,39 +15,42 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @DataJpaTest
-public class BorrowerRepositoryIntegrationTest {
+public class MybikeUserRepositoryIntegrationTest {
     @Autowired
-    BorrowerRepository repository;
+    private UserRepository repository;
+    private MybikeUser user;
+
+    @BeforeEach
+    void setUp(){
+        user = MybikeUser.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password");
+    }
 
     @Test
-    void shouldSaveBorrower() {
-        Borrower borrower = Borrower.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com");
-        Borrower saved = repository.save(borrower);
+    void shouldSaveUser() {
+        MybikeUser saved = repository.save(user);
         assertNotNull(saved.getId());
         assertThat(saved)
                 .usingRecursiveComparison()
-                .isEqualTo(borrower);
+                .isEqualTo(user);
     }
 
     @Test
     @Transactional
-    void shouldSaveAndLoadBorrower() {
-        Borrower borrower = Borrower.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com");
-        Borrower saved = repository.save(borrower);
-        Borrower loaded = repository.getOne(saved.getId());
+    void shouldSaveAndLoadUser() {
+        MybikeUser saved = repository.save(user);
+        MybikeUser loaded = repository.getOne(saved.getId());
         assertNotNull(saved.getId());
         assertThat(saved)
                 .usingRecursiveComparison()
-                .isEqualTo(borrower);
+                .isEqualTo(user);
     }
 
     @Test
     @Transactional
-    void shouldDeleteBorrower() {
-        Borrower borrower = Borrower.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com");
-        Borrower saved = repository.save(borrower);
+    void shouldDeleteUser() {
+        MybikeUser saved = repository.save(user);
         repository.delete(saved);
         Throwable exception = assertThrows(JpaObjectRetrievalFailureException.class, () -> repository.getOne(saved.getId()));
-        assertEquals("Unable to find com.bike.model.Borrower with id " + saved.getId(), exception.getCause().getMessage());
+        assertEquals("Unable to find com.bike.model.MybikeUser with id " + saved.getId(), exception.getCause().getMessage());
     }
 }

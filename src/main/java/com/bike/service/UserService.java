@@ -1,7 +1,7 @@
 package com.bike.service;
 
-import com.bike.model.Borrower;
-import com.bike.repository.BorrowerRepository;
+import com.bike.model.MybikeUser;
+import com.bike.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -14,42 +14,42 @@ import java.util.UUID;
 
 @Slf4j
 @Service
-public class BorrowerService {
+public class UserService {
 
-    private final BorrowerRepository borrowerRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public BorrowerService(BorrowerRepository borrowerRepository) {
-        this.borrowerRepository = borrowerRepository;
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
-    public List<Borrower> getList() {
-        return borrowerRepository.findAll();
+    public List<MybikeUser> getAll() {
+        return userRepository.findAll();
     }
 
-    public Borrower getById(UUID id) throws EntityNotFoundException {
-        Borrower borrower;
+    public MybikeUser getById(UUID id) throws EntityNotFoundException {
+        MybikeUser user;
         try {
-            borrower = borrowerRepository.getOne(id);
+            user = userRepository.getOne(id);
         } catch (JpaObjectRetrievalFailureException ex) {
             throw new EntityNotFoundException(ex.getCause().getMessage());
         }
-        return borrower;
+        return user;
     }
 
-    public Borrower addNewBorrower(Borrower borrower) {
-        return borrowerRepository.save(borrower);
+    public MybikeUser addNewUser(MybikeUser user) {
+        return userRepository.save(user);
     }
 
     /**
      * Deletes a borrower by id
      *
-     * @param borrowerId - searched id
+     * @param userId - searched id
      * @return true or false depending on the success of the operation (i.e. whether the entry is found)
      */
-    public boolean deleteBorrower(UUID borrowerId) {
+    public boolean deleteUser(UUID userId) {
         try {
-            borrowerRepository.deleteById(borrowerId);
+            userRepository.deleteById(userId);
         } catch (EmptyResultDataAccessException ex) {
             return false;
         }

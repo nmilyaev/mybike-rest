@@ -3,10 +3,7 @@ package com.bike.model;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import java.util.UUID;
 
 @Getter
@@ -14,8 +11,9 @@ import java.util.UUID;
 @ToString
 @NoArgsConstructor
 @EqualsAndHashCode(of = {"email"})
-@MappedSuperclass
-public abstract class Person {
+@Entity(name = "mybike_user")
+@Table(name = "mybike_user")
+public class MybikeUser {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
@@ -30,7 +28,7 @@ public abstract class Person {
     private String surname;
     @Column(name = "address")
     private String address;
-    @Column(name = "postcode", length = 10)
+    @Column(name = "postcode", nullable = false, length = 10)
     private String postcode;
     @Column(name = "city", length = 50)
     private String city;
@@ -38,11 +36,19 @@ public abstract class Person {
     private String email;
     @Column(name = "phone", length = 20)
     private String phone;
+    @Column(name = "password", nullable = false, length = 50)
+    private String password;
 
-    public Person(String firstname, String surname, String email) {
+    public MybikeUser(String firstname, String surname, String email, String postcode, String password) {
         this.firstname = firstname;
         this.surname = surname;
+        this.postcode = postcode;
         this.email = email;
+        this.password = password;
+    }
+
+    public static MybikeUser createWithRequiredFields(String firstname, String surname, String email, String postcode, String password) {
+        return new MybikeUser(firstname, surname, email, postcode, password);
     }
 }
 
