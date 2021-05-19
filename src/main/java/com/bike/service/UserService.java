@@ -1,5 +1,6 @@
 package com.bike.service;
 
+import com.bike.model.Bike;
 import com.bike.model.MybikeUser;
 import com.bike.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Slf4j
@@ -17,10 +19,12 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final BikeService bikeService;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, BikeService bikeService) {
         this.userRepository = userRepository;
+        this.bikeService = bikeService;
     }
 
     public List<MybikeUser> getAll() {
@@ -54,5 +58,13 @@ public class UserService {
             return false;
         }
         return true;
+    }
+
+    public Bike listNewBike(MybikeUser user, Bike bike) {
+        Set<Bike> bikeOffers = user.getBikeOffers();
+        bikeService.addNewBike(bike);
+        bikeOffers.add(bike);
+        userRepository.save(user);
+        return bike;
     }
 }

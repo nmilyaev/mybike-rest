@@ -30,7 +30,7 @@ public class Bike {
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
-    @Column(name = "id", updatable = false, nullable = false)
+    @Column(name = "bike_id", updatable = false, nullable = false)
     UUID id;
     @Column(name = "make", length=100)
     String make;
