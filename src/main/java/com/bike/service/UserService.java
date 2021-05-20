@@ -61,6 +61,7 @@ public class UserService {
     }
 
     public Bike listNewBike(MybikeUser user, Bike bike) {
+        bike.setOwner(user);
         Set<Bike> bikeOffers = user.getBikeOffers();
         bikeService.addNewBike(bike);
         bikeOffers.add(bike);

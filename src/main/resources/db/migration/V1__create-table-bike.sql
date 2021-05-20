@@ -3,5 +3,6 @@ create table if not exists bike (
    make varchar(100),
    model varchar(100),
    worth numeric(19, 2),
+   user_id uuid not null,
    primary key (bike_id)
 )

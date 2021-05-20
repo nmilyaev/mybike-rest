@@ -1,6 +1,7 @@
 package com.bike;
 
 import com.bike.model.Bike;
+import com.bike.model.MybikeUser;
 import com.bike.repository.BikeRepository;
 import com.bike.service.BikeService;
 import lombok.extern.slf4j.Slf4j;
@@ -32,11 +33,14 @@ class BikeServiceTest {
 
     private List<Bike> bikes;
 
+    private MybikeUser user;
+
     @BeforeEach
     private void setUpRepository() {
         bikes = new ArrayList<>();
-        Bike bike1 = new Bike(UUID.randomUUID(), "Raleigh", "Pioneer", BigDecimal.valueOf(80.00));
-        Bike bike2 = new Bike(UUID.randomUUID(), "Dawes", "Galaxy", BigDecimal.valueOf(100.00));
+        user = new MybikeUser();
+        Bike bike1 = new Bike(UUID.randomUUID(), "Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
+        Bike bike2 = new Bike(UUID.randomUUID(), "Dawes", "Galaxy", BigDecimal.valueOf(100.00), user);
         bikes.add(bike1);
         bikes.add(bike2);
         log.info(bikes.toString());
@@ -51,8 +55,8 @@ class BikeServiceTest {
         List<Bike> bikes = service.getList();
 
         //then
-        Bike bike1 = new Bike(UUID.randomUUID(), "Raleigh", "Pioneer", BigDecimal.valueOf(80.00));
-        Bike bike2 = new Bike(UUID.randomUUID(), "Dawes", "Galaxy", BigDecimal.valueOf(100.00));
+        Bike bike1 = new Bike(UUID.randomUUID(), "Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
+        Bike bike2 = new Bike(UUID.randomUUID(), "Dawes", "Galaxy", BigDecimal.valueOf(100.00), user);
         assertBikesTheSame(bike1, bikes.get(0));
         assertBikesTheSame(bike2, bikes.get(1));
     }
@@ -67,7 +71,7 @@ class BikeServiceTest {
         Bike bike = service.getById(bikeId);
 
         //then
-        Bike bike1 = new Bike(bikeId, "Raleigh", "Pioneer", BigDecimal.valueOf(80.00));
+        Bike bike1 = new Bike(bikeId, "Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
         assertBikesTheSame(bike1, bike);
     }
 
@@ -75,7 +79,7 @@ class BikeServiceTest {
     void shouldCreateNewBike() {
         // given
         UUID bikeId = UUID.randomUUID();
-        Bike bike3 = new Bike(bikeId, "Claud Butler", "Echelon", BigDecimal.valueOf(180.00));
+        Bike bike3 = new Bike(bikeId, "Claud Butler", "Echelon", BigDecimal.valueOf(180.00), user);
         given(bikeRepository.save(bike3)).will((Answer) invocation -> {
             Object[] args = invocation.getArguments();
             Bike bike = (Bike) args[0];
@@ -95,6 +99,7 @@ class BikeServiceTest {
     private void assertBikesTheSame(Bike bike1, Bike bike2) {
         assertEquals(bike1.getMake(), bike2.getMake());
         assertEquals(bike1.getModel(), bike2.getModel());
-        assertEquals(bike1.getWorth(), bike2.getWorth());
+        assertEquals(bike1.getValue(), bike2.getValue());
+        assertEquals(bike1.getOwner(), bike2.getOwner());
     }
 }

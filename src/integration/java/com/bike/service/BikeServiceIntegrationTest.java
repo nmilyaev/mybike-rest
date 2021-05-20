@@ -2,7 +2,9 @@ package com.bike.service;
 
 import com.bike.BorrowMyBikeApplication;
 import com.bike.model.Bike;
+import com.bike.model.MybikeUser;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,9 +24,20 @@ public class BikeServiceIntegrationTest {
     @Autowired
     BikeService service;
 
+    @Autowired
+    private UserService userService;
+
+    private MybikeUser user;
+
+    @BeforeEach
+    void setUp() {
+        user = MybikeUser.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password");
+        userService.addNewUser(user);
+    }
+
     @Test
     void shouldSaveBike() {
-        Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00));
+        Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
         Bike saved = service.addNewBike(bike);
         assertNotNull(saved.getId());
         assertThat(saved)
@@ -37,7 +50,7 @@ public class BikeServiceIntegrationTest {
     @Transactional
         // else service.getById fails to lazy-load the bike
     void shouldSaveAndLoadBike() {
-        Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00));
+        Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
         Bike saved = service.addNewBike(bike);
         Bike loaded = service.getById(saved.getId());
         assertNotNull(saved.getId());
@@ -50,7 +63,7 @@ public class BikeServiceIntegrationTest {
     @Transactional
         // else service.getById fails to lazy-load the bike
     void shouldDeleteBike() {
-        Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00));
+        Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
         service.addNewBike(bike);
         boolean success = service.deleteBike(bike.getId());
         assertTrue(success);
@@ -62,7 +75,7 @@ public class BikeServiceIntegrationTest {
     @Transactional
         // else service.getById fails to lazy-load the bike
     void shouldNotDeleteBikeBywrongId() {
-        Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00));
+        Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
         service.addNewBike(bike);
         boolean success = service.deleteBike(UUID.randomUUID());
         assertFalse(success);

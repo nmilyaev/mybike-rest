@@ -81,6 +81,7 @@ public class MybikeUserServiceIntegrationTest {
     }
 
     @Test
+    @Transactional
     void shouldSaveAndFetchAllUsers() {
         MybikeUser saved1 = userService.addNewUser(user);
         assertNotNull(saved1.getId());
@@ -105,6 +106,7 @@ public class MybikeUserServiceIntegrationTest {
         Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00));
         bike = userService.listNewBike(user, bike);
         assertNotNull(bike.getId());
+        assertEquals(user, bike.getOwner());
         assertEquals(1, user.getBikeOffers().size());
         assertThat(user.getBikeOffers().iterator().next())
                 .usingRecursiveComparison()

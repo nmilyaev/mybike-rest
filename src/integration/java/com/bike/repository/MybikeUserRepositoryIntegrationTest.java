@@ -13,6 +13,10 @@ import javax.transaction.Transactional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Not a true test; that is just to test how @DataJpaTest works
+ */
+
 @Slf4j
 @DataJpaTest
 public class MybikeUserRepositoryIntegrationTest {

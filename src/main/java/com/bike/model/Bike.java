@@ -7,11 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.UUID;
 
@@ -31,24 +27,36 @@ public class Bike {
             strategy = "org.hibernate.id.UUIDGenerator"
     )
     @Column(name = "bike_id", updatable = false, nullable = false)
-    UUID id;
-    @Column(name = "make", length=100)
-    String make;
-    @Column(name = "model", length=100)
-    String model;
-    @Column(name = "worth")
-    BigDecimal worth;
+    private UUID id;
 
-    public Bike(UUID id, String make, String model, BigDecimal worth) {
+    @Column(name = "make", length=100)
+    private String make;
+
+    @Column(name = "model", length=100)
+    private String model;
+
+    @Column(name = "value")
+    private BigDecimal value;
+
+    @ManyToOne
+    @JoinColumn(name="user_id", nullable=false, foreignKey=@ForeignKey(name="bike_owner_id"))
+    private MybikeUser owner;
+
+    public Bike(UUID id, String make, String model, BigDecimal value, MybikeUser user) {
+        this(make, model, value, user);
         this.id = id;
-        this.make = make;
-        this.model = model;
-        this.worth = worth;
     }
 
-    public Bike(String make, String model, BigDecimal worth) {
+    public Bike(String make, String model, BigDecimal value, MybikeUser user) {
         this.make = make;
         this.model = model;
-        this.worth = worth;
+        this.value = value;
+        this.owner = user;
+    }
+
+    public Bike(String make, String model, BigDecimal value) {
+        this.make = make;
+        this.model = model;
+        this.value = value;
     }
 }
