@@ -13,7 +13,7 @@ import java.util.UUID;
 @Repository
 public interface BikeOfferRepository extends JpaRepository<BikeOffer, Long> {
 
-    @Query("SELECT o FROM BikeOffer o, Bike b \n" +
-            "WHERE o.bike=b.id AND b.owner=:user")
+    @Query("SELECT o FROM BikeOffer o \n" +
+            "WHERE o.bike.owner=:user")
     List<BikeOffer> findAllByBikeOwner(@Param("user") MybikeUser user);
 }

@@ -26,4 +26,10 @@ public class BikeOffer extends BikeListing {
     @OneToOne
     @JoinColumn(name="bike_id", nullable=false, foreignKey=@ForeignKey(name="bike_listing_bike_id"))
     private Bike bike;
+
+    public BikeOffer(Bike bike, BigDecimal deposit, BigDecimal dailyRate) {
+        this.deposit = deposit;
+        this.dailyRate = dailyRate;
+        this.bike = bike;
+    }
 }

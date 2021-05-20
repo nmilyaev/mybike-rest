@@ -1,6 +1,7 @@
 package com.bike.service;
 
 import com.bike.model.Bike;
+import com.bike.model.BikeOffer;
 import com.bike.model.MybikeUser;
 import com.bike.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -19,12 +20,10 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final BikeService bikeService;
 
     @Autowired
-    public UserService(UserRepository userRepository, BikeService bikeService) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.bikeService = bikeService;
     }
 
     public List<MybikeUser> getAll() {
@@ -58,13 +57,5 @@ public class UserService {
             return false;
         }
         return true;
-    }
-
-    public Bike listNewBike(MybikeUser user, Bike bike) {
-        bike.setOwner(user);
-        Set<Bike> bikeOffers = user.getBikeOffers();
-        bikeService.addNewBike(bike);
-        bikeOffers.add(bike);
-        return bike;
     }
 }

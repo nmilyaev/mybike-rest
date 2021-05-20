@@ -47,7 +47,7 @@ public class MybikeUser {
             joinColumns = @JoinColumn(name = "user_id", foreignKey=@ForeignKey(name="bike_offer_user_id")),
             inverseJoinColumns = @JoinColumn(name = "bike_id", foreignKey=@ForeignKey(name="bike_offer_bike_id"))
     )
-    private Set<Bike> bikeOffers = new HashSet<>();
+    private Set<BikeOffer> bikeOffers = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(

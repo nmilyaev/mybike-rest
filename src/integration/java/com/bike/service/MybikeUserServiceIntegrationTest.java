@@ -98,18 +98,4 @@ public class MybikeUserServiceIntegrationTest {
                 .usingRecursiveComparison()
                 .isEqualTo(saved2);
     }
-
-    @Test
-    void shouldSaveBikeOffersForUser() {
-        MybikeUser user = userService.addNewUser(this.user);
-        assertNotNull(user.getId());
-        Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00));
-        bike = userService.listNewBike(user, bike);
-        assertNotNull(bike.getId());
-        assertEquals(user, bike.getOwner());
-        assertEquals(1, user.getBikeOffers().size());
-        assertThat(user.getBikeOffers().iterator().next())
-                .usingRecursiveComparison()
-                .isEqualTo(bike);
-    }
 }
