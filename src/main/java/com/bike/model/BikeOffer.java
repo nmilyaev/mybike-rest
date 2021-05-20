@@ -4,18 +4,17 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
-@EqualsAndHashCode(of = {"id"})
-@MappedSuperclass
-public abstract class BikeListing {
+@Entity(name = "BikeOffer")
+@Table(name = "bike_offer")
+public class BikeOffer extends BikeListing {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "id", updatable = false, nullable = false)
+    @Column(name = "offer_id", updatable = false, nullable = false)
     private Long id;
 
     @Column(name = "deposit")
@@ -25,6 +24,6 @@ public abstract class BikeListing {
     private BigDecimal dailyRate;
 
     @OneToOne
-    @JoinColumn(name="bike_id", nullable=false)
+    @JoinColumn(name="bike_id", nullable=false, foreignKey=@ForeignKey(name="bike_listing_bike_id"))
     private Bike bike;
 }

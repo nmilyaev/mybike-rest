@@ -16,7 +16,7 @@ import java.util.UUID;
 @ToString
 @NoArgsConstructor
 @EqualsAndHashCode(of = {"id"})
-@Entity(name = "bike")
+@Entity(name = "Bike")
 @Table(name = "bike")
 public class Bike {
 
@@ -38,8 +38,14 @@ public class Bike {
     @Column(name = "value")
     private BigDecimal value;
 
+    @Column(name = "deposit")
+    private BigDecimal deposit;
+
+    @Column(name = "daily_rate")
+    private BigDecimal dailyRate;
+
     @ManyToOne
-    @JoinColumn(name="user_id", nullable=false, foreignKey=@ForeignKey(name="bike_owner_id"))
+    @JoinColumn(name="owner_id", nullable=false, foreignKey=@ForeignKey(name="bike_owner_id"))
     private MybikeUser owner;
 
     public Bike(UUID id, String make, String model, BigDecimal value, MybikeUser user) {

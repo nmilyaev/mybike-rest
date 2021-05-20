@@ -13,7 +13,7 @@ import java.util.UUID;
 @ToString
 @NoArgsConstructor
 @EqualsAndHashCode(of = {"email"})
-@Entity(name = "mybike_user")
+@Entity(name = "MyBikeUser")
 @Table(name = "mybike_user")
 public class MybikeUser {
     @Id
@@ -52,7 +52,7 @@ public class MybikeUser {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "bike_hire",
-            joinColumns = @JoinColumn(name = "user_id", foreignKey=@ForeignKey(name="bike_hire_user_id")),
+            joinColumns = @JoinColumn(name = "user_id", foreignKey=@ForeignKey(name="bike_hire_borrower_id")),
             inverseJoinColumns = @JoinColumn(name = "bike_id", foreignKey=@ForeignKey(name="bike_hire_bike_id"))
     )
     private Set<Bike> bikeHires = new HashSet<>();

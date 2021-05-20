@@ -65,7 +65,6 @@ public class UserService {
         Set<Bike> bikeOffers = user.getBikeOffers();
         bikeService.addNewBike(bike);
         bikeOffers.add(bike);
-        userRepository.save(user);
         return bike;
     }
 }
