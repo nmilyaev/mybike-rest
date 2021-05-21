@@ -13,6 +13,7 @@ import java.util.UUID;
 @ToString
 @NoArgsConstructor
 @EqualsAndHashCode(of = {"id"})
+@Builder
 @Entity(name = "BikeHire")
 @Table(name = "bike_hire")
 public class BikeHire {
@@ -36,6 +37,20 @@ public class BikeHire {
     private LocalDate lastDay;
 
     @OneToOne
+    @JoinColumn(name="bike_id", nullable=false, foreignKey=@ForeignKey(name="bike_hire_bike_id"))
+    private Bike bike;
+
+    @OneToOne
     @JoinColumn(name="borrower_id", nullable=false, foreignKey=@ForeignKey(name="bike_hire_borrower_id"))
     private MybikeUser borrower;
+
+    public BikeHire(Long id, BigDecimal deposit, BigDecimal dailyRate, LocalDate firstDay, LocalDate lastDay, Bike bike, MybikeUser borrower) {
+        this.id = id;
+        this.deposit = deposit;
+        this.dailyRate = dailyRate;
+        this.firstDay = firstDay;
+        this.lastDay = lastDay;
+        this.bike = bike;
+        this.borrower = borrower;
+    }
 }
