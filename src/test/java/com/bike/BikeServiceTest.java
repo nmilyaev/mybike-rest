@@ -16,6 +16,7 @@ import org.mockito.stubbing.Answer;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -65,7 +66,7 @@ class BikeServiceTest {
     void shouldGetBikeById() {
         // given
         UUID bikeId = bikes.get(0).getId();
-        given(bikeRepository.getOne(bikeId)).willReturn(bikes.get(0));
+        given(bikeRepository.findById(bikeId)).willReturn(Optional.of(bikes.get(0)));
 
         // when
         Bike bike = service.getById(bikeId);
@@ -80,7 +81,7 @@ class BikeServiceTest {
         // given
         UUID bikeId = UUID.randomUUID();
         Bike bike3 = new Bike(bikeId, "Claud Butler", "Echelon", BigDecimal.valueOf(180.00), user);
-        given(bikeRepository.save(bike3)).will((Answer) invocation -> {
+        given(bikeRepository.save(bike3)).will((Answer<Bike>) invocation -> {
             Object[] args = invocation.getArguments();
             Bike bike = (Bike) args[0];
             bikes.add(bike);

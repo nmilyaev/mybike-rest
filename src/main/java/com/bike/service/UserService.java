@@ -5,15 +5,16 @@ import com.bike.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 
 @Slf4j
 @Service
+@Transactional
 public class UserService {
 
     private final UserRepository userRepository;
@@ -28,16 +29,15 @@ public class UserService {
     }
 
     public MybikeUser getById(UUID id) throws EntityNotFoundException {
-        MybikeUser user;
-        try {
-            user = userRepository.getOne(id);
-        } catch (JpaObjectRetrievalFailureException ex) {
-            throw new EntityNotFoundException(ex.getCause().getMessage());
-        }
-        return user;
+        return userRepository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException("Unable to find com.bike.model.MybikeUser with id " + id));
     }
 
-    public MybikeUser addNewUser(MybikeUser user) {
+    public MybikeUser createUser(MybikeUser user) {
+        MybikeUser userWithSameEmail = userRepository.findByEmail(user.getEmail());
+        if (userWithSameEmail != null) {
+            throw new IllegalArgumentException("User with this email already exists: " + userWithSameEmail.getId());
+        }
         return userRepository.save(user);
     }
 

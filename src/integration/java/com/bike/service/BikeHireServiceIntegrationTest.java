@@ -4,6 +4,8 @@ import com.bike.BorrowMyBikeApplication;
 import com.bike.model.Bike;
 import com.bike.model.BikeHire;
 import com.bike.model.MybikeUser;
+import com.bike.repository.BikeRepository;
+import com.bike.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,6 +33,12 @@ public class BikeHireServiceIntegrationTest {
     BikeService bikeService;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private BikeRepository bikeRepository;
+
+    @Autowired
     private UserService userService;
 
     private MybikeUser owner;
@@ -40,10 +48,12 @@ public class BikeHireServiceIntegrationTest {
 
     @BeforeEach
     void setUp() {
+        bikeRepository.deleteAll();
+        userRepository.deleteAll();
         owner = MybikeUser.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password");
-        userService.addNewUser(owner);
+        userService.createUser(owner);
         borrower = MybikeUser.createWithRequiredFields("Paul", "Smith", "p.s@mail.com", "SW8 1NR", "password");
-        userService.addNewUser(borrower);
+        userService.createUser(borrower);
         bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), owner);
         bikeService.addNewBike(bike);
         now = now();
@@ -69,7 +79,7 @@ public class BikeHireServiceIntegrationTest {
 
     @Test
     @Transactional
-    void shouldcancelBikeHire() {
+    void shouldCancelBikeHire() {
         BikeHire hire = BikeHire.builder()
                 .bike(bike)
                 .borrower(borrower)

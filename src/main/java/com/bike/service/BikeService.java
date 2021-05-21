@@ -1,26 +1,33 @@
 package com.bike.service;
 
 import com.bike.model.Bike;
+import com.bike.model.MybikeUser;
 import com.bike.repository.BikeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Slf4j
 @Service
+@Transactional
 public class BikeService {
 
     private final BikeRepository bikeRepository;
 
+    private final UserService userService;
+
     @Autowired
-    public BikeService(BikeRepository bikeRepository) {
+    public BikeService(BikeRepository bikeRepository,
+                       UserService userService) {
         this.bikeRepository = bikeRepository;
+        this.userService = userService;
     }
 
     public List<Bike> getList() {
@@ -28,16 +35,12 @@ public class BikeService {
     }
 
     public Bike getById(UUID id) throws EntityNotFoundException {
-        Bike bike;
-        try {
-            bike = bikeRepository.getOne(id);
-        } catch (JpaObjectRetrievalFailureException ex) {
-            throw new EntityNotFoundException(ex.getCause().getMessage());
-        }
-        return bike;
+        return bikeRepository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException("Unable to find com.bike.model.Bike with id " + id));
     }
 
     public Bike addNewBike(Bike bike) {
+        //TODO: add bike to the user
         return bikeRepository.save(bike);
     }
 
@@ -49,9 +52,13 @@ public class BikeService {
      */
     public boolean deleteBike(UUID bikeId) {
         try {
+            // TODO - make sure this works
+            Bike bike = getById(bikeId);
+            MybikeUser owner = bike.getOwner();
+            Set<Bike> bikeOffers = owner.getBikeOffers();
+            bikeOffers.remove(bike);
             bikeRepository.deleteById(bikeId);
-        }
-        catch (EmptyResultDataAccessException ex){
+        } catch (EmptyResultDataAccessException | EntityNotFoundException ex) {
             return false;
         }
         return true;

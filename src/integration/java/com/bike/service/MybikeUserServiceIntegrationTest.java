@@ -1,8 +1,8 @@
 package com.bike.service;
 
 import com.bike.BorrowMyBikeApplication;
-import com.bike.model.Bike;
 import com.bike.model.MybikeUser;
+import com.bike.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,7 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,18 +23,24 @@ public class MybikeUserServiceIntegrationTest {
 
     @Autowired
     private UserService userService;
-    private MybikeUser user;
+
+    @Autowired
+    private UserRepository userRepository;
+
     @Autowired
     BikeService bikeService;
 
+    private MybikeUser user;
+
     @BeforeEach
     void setUp() {
+        userRepository.deleteAll();
         user = MybikeUser.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password");
     }
 
     @Test
     void shouldSaveUser() {
-        MybikeUser saved = userService.addNewUser(user);
+        MybikeUser saved = userService.createUser(user);
         assertNotNull(saved.getId());
         assertThat(saved)
                 .usingRecursiveComparison()
@@ -44,10 +49,8 @@ public class MybikeUserServiceIntegrationTest {
     }
 
     @Test
-    @Transactional
-        // else service.getById fails to lazy-load the bike
     void shouldSaveAndLoadUser() {
-        MybikeUser saved = userService.addNewUser(user);
+        MybikeUser saved = userService.createUser(user);
         MybikeUser loaded = userService.getById(saved.getId());
         assertNotNull(saved.getId());
         assertThat(loaded)
@@ -56,10 +59,8 @@ public class MybikeUserServiceIntegrationTest {
     }
 
     @Test
-    @Transactional
-        // else service.getById fails to lazy-load the bike
     void shouldDeleteUser() {
-        userService.addNewUser(user);
+        userService.createUser(user);
         boolean success = userService.deleteUser(user.getId());
         assertTrue(success);
         Throwable exception = assertThrows(EntityNotFoundException.class, () -> userService.getById(user.getId()));
@@ -68,9 +69,8 @@ public class MybikeUserServiceIntegrationTest {
 
     @Test
     @Transactional
-        // else service.getById fails to lazy-load the bike
     void shouldNotDeleteUserByWrongId() {
-        userService.addNewUser(user);
+        userService.createUser(user);
         boolean success = userService.deleteUser(UUID.randomUUID());
         assertFalse(success);
         MybikeUser loaded = userService.getById(user.getId());
@@ -81,13 +81,23 @@ public class MybikeUserServiceIntegrationTest {
     }
 
     @Test
-    @Transactional
-    void shouldSaveAndFetchAllUsers() {
-        MybikeUser saved1 = userService.addNewUser(user);
-        assertNotNull(saved1.getId());
-        setUp();
+    void shouldNotCreateDuplicateUser() {
+        MybikeUser saved = userService.createUser(user);
+        assertNotNull(saved.getId());
+        user = MybikeUser.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password");
         assertNull(user.getId());
-        MybikeUser saved2 = userService.addNewUser(user);
+        Throwable exception = assertThrows(IllegalArgumentException.class, () -> userService.createUser(user));
+        assertEquals("User with this email already exists: " + saved.getId(), exception.getMessage());
+    }
+
+    @Test
+    void shouldSaveAndFetchAllUsers() {
+        MybikeUser saved1 = userService.createUser(user);
+        assertNotNull(saved1.getId());
+        user = MybikeUser.createWithRequiredFields("Nick", "Mills", "n.n@mail.com", "SW9 1NR", "password");
+        user.setEmail("m.n@mail.com");
+        assertNull(user.getId());
+        MybikeUser saved2 = userService.createUser(user);
         assertNotNull(saved2.getId());
         List<MybikeUser> allUsers = userService.getAll();
         assertEquals(2, allUsers.size());
@@ -98,4 +108,5 @@ public class MybikeUserServiceIntegrationTest {
                 .usingRecursiveComparison()
                 .isEqualTo(saved2);
     }
+
 }
