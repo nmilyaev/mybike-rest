@@ -2,6 +2,7 @@ package com.bike.web;
 
 import com.bike.model.MybikeUser;
 import com.bike.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import java.util.UUID;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
+@Slf4j
 @RestController
 @RequestMapping("/user")
 @Transactional
@@ -36,6 +38,7 @@ public class UserController {
 
     @PostMapping(value = "/createUser", consumes = "application/json", produces = "application/json")
     public MybikeUser createUser(@RequestBody MybikeUser user) {
+        log.info(".............User: {}", user);
         return userService.createUser(user);
     }
 
