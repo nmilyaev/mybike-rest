@@ -56,7 +56,6 @@ public class BikeServiceIntegrationTest {
     }
 
     @Test
-    @Transactional
     void shouldSaveAndLoadBike() {
         Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
         Bike saved = service.addNewBike(bike);
@@ -81,7 +80,6 @@ public class BikeServiceIntegrationTest {
     }
 
     @Test
-    @Transactional
     void shouldNotDeleteBikeByWrongId() {
         Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
         service.addNewBike(bike);

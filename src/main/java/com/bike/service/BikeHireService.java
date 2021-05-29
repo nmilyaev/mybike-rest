@@ -1,6 +1,5 @@
 package com.bike.service;
 
-import com.bike.model.Bike;
 import com.bike.model.BikeHire;
 import com.bike.repository.BikeHireRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -10,11 +9,12 @@ import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.util.List;
-import java.util.UUID;
 
 @Slf4j
 @Service
+@Transactional
 public class BikeHireService {
 
     private final BikeHireRepository repository;

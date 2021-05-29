@@ -63,4 +63,8 @@ public class BikeService {
         }
         return true;
     }
+
+    public void deleteAll() {
+        bikeRepository.deleteAll();
+    }
 }

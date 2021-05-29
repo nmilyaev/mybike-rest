@@ -33,12 +33,6 @@ public class BikeHireServiceIntegrationTest {
     BikeService bikeService;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private BikeRepository bikeRepository;
-
-    @Autowired
     private UserService userService;
 
     private MybikeUser owner;
@@ -48,15 +42,19 @@ public class BikeHireServiceIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        bikeRepository.deleteAll();
-        userRepository.deleteAll();
+        setUpEntities();
+        now = now();
+    }
+
+    public void setUpEntities() {
+        bikeService.deleteAll();
+        userService.deleteAll();
         owner = MybikeUser.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password");
         userService.createUser(owner);
         borrower = MybikeUser.createWithRequiredFields("Paul", "Smith", "p.s@mail.com", "SW8 1NR", "password");
         userService.createUser(borrower);
         bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), owner);
         bikeService.addNewBike(bike);
-        now = now();
     }
 
     @Test
@@ -78,7 +76,7 @@ public class BikeHireServiceIntegrationTest {
     }
 
     @Test
-    @Transactional
+//    @Transactional
     void shouldCancelBikeHire() {
         BikeHire hire = BikeHire.builder()
                 .bike(bike)

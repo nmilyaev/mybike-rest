@@ -42,7 +42,7 @@ public class UserService {
     }
 
     /**
-     * Deletes a borrower by id
+     * Deletes a user by id
      *
      * @param userId - searched id
      * @return true or false depending on the success of the operation (i.e. whether the entry is found)
@@ -54,5 +54,9 @@ public class UserService {
             return false;
         }
         return true;
+    }
+
+    public void deleteAll() {
+        userRepository.deleteAll();
     }
 }

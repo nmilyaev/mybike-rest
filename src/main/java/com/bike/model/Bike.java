@@ -9,16 +9,19 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.UUID;
 
 @Getter
 @Setter
-@ToString
+//@ToString
 @NoArgsConstructor
 @EqualsAndHashCode(of = {"id"})
 @Entity(name = "Bike")
 @Table(name = "bike")
 public class Bike {
+    private final int SCALE = 2;
+    private final RoundingMode ROUNDING_MODE = RoundingMode.CEILING;
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -35,13 +38,13 @@ public class Bike {
     @Column(name = "model", length=100)
     private String model;
 
-    @Column(name = "value")
+    @Column(name = "value", precision = 8, scale = 2)
     private BigDecimal value;
 
-    @Column(name = "deposit")
+    @Column(name = "deposit", precision = 8, scale = 2)
     private BigDecimal deposit;
 
-    @Column(name = "daily_rate")
+    @Column(name = "daily_rate", precision = 8, scale = 2)
     private BigDecimal dailyRate;
 
     @ManyToOne
@@ -64,5 +67,32 @@ public class Bike {
         this.make = make;
         this.model = model;
         this.value = value;
+    }
+
+    public BigDecimal getValue() {
+        return value.setScale(SCALE, ROUNDING_MODE);
+    }
+
+    public BigDecimal getDeposit() {
+        return deposit.setScale(SCALE, ROUNDING_MODE);
+    }
+
+    public BigDecimal getDailyRate() {
+        return dailyRate.setScale(SCALE, ROUNDING_MODE);
+    }
+
+    @Override
+    public String toString() {
+        return "Bike{" +
+                "SCALE=" + SCALE +
+                ", ROUNDING_MODE=" + ROUNDING_MODE +
+                ", id=" + id +
+                ", make='" + make + '\'' +
+                ", model='" + model + '\'' +
+                ", value=" + value +
+                ", deposit=" + deposit +
+                ", dailyRate=" + dailyRate +
+                ", owner=" + owner +
+                '}';
     }
 }
