@@ -4,8 +4,6 @@ import com.bike.BorrowMyBikeApplication;
 import com.bike.model.Bike;
 import com.bike.model.BikeHire;
 import com.bike.model.MybikeUser;
-import com.bike.repository.BikeRepository;
-import com.bike.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,18 +11,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.persistence.EntityNotFoundException;
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import static java.time.LocalDate.now;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Slf4j
 @SpringBootTest(classes = BorrowMyBikeApplication.class)
-public class BikeHireServiceIntegrationTest {
+public class BikeHireServiceIntegrationTest extends BasicServiceIntegrationTest {
 
     @Autowired
     BikeHireService service;
@@ -42,23 +38,19 @@ public class BikeHireServiceIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        setUpEntities();
         now = now();
-    }
-
-    public void setUpEntities() {
-        bikeService.deleteAll();
-        userService.deleteAll();
         owner = MybikeUser.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password");
-        userService.createUser(owner);
+        owner = userService.createUser(owner);
         borrower = MybikeUser.createWithRequiredFields("Paul", "Smith", "p.s@mail.com", "SW8 1NR", "password");
         userService.createUser(borrower);
         bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), owner);
         bikeService.addNewBike(bike);
+//        bike = bikeService.getById(bike.getId());
+//        borrower = userService.getById(borrower.getId());
+//        owner = userService.getById(owner.getId());
     }
 
     @Test
-    @Transactional
     void shouldCreateBikeHire() {
         BikeHire hire = BikeHire.builder()
                 .bike(bike)

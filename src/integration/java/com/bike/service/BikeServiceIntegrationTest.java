@@ -1,18 +1,12 @@
 package com.bike.service;
 
-import com.bike.BorrowMyBikeApplication;
 import com.bike.model.Bike;
 import com.bike.model.MybikeUser;
-import com.bike.repository.BikeRepository;
-import com.bike.repository.UserRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.persistence.EntityNotFoundException;
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.Set;
 import java.util.UUID;
@@ -20,9 +14,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-@Slf4j
-@SpringBootTest(classes = BorrowMyBikeApplication.class)
-public class BikeServiceIntegrationTest {
+public class BikeServiceIntegrationTest extends BasicServiceIntegrationTest {
 
     @Autowired
     private BikeService service;
@@ -30,17 +22,10 @@ public class BikeServiceIntegrationTest {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private BikeRepository bikeRepository;
-
     private MybikeUser user;
 
     @BeforeEach
     void setUp() {
-        userRepository.deleteAll();
         user = MybikeUser.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password");
         userService.createUser(user);
     }

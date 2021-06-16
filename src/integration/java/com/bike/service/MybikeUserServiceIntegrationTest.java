@@ -19,13 +19,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @SpringBootTest(classes = BorrowMyBikeApplication.class)
-public class MybikeUserServiceIntegrationTest {
+public class MybikeUserServiceIntegrationTest extends BasicServiceIntegrationTest {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     BikeService bikeService;
@@ -34,7 +31,6 @@ public class MybikeUserServiceIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        userRepository.deleteAll();
         user = MybikeUser.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password");
     }
 
