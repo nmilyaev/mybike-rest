@@ -21,13 +21,9 @@ public class BikeService {
 
     private final BikeRepository bikeRepository;
 
-    private final UserService userService;
-
     @Autowired
-    public BikeService(BikeRepository bikeRepository,
-                       UserService userService) {
+    public BikeService(BikeRepository bikeRepository) {
         this.bikeRepository = bikeRepository;
-        this.userService = userService;
     }
 
     public List<Bike> getList() {
