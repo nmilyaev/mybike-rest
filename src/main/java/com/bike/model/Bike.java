@@ -84,8 +84,6 @@ public class Bike {
     @Override
     public String toString() {
         return "Bike{" +
-                "SCALE=" + SCALE +
-                ", ROUNDING_MODE=" + ROUNDING_MODE +
                 ", id=" + id +
                 ", make='" + make + '\'' +
                 ", model='" + model + '\'' +
