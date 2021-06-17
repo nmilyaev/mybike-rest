@@ -55,13 +55,11 @@ public class BikeServiceIntegrationTest extends BasicServiceIntegrationTest {
     void shouldDeleteBike() {
         Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
         service.addNewBike(bike);
+        assertNotNull(bike.getId());
         boolean success = service.deleteBike(bike.getId());
         assertTrue(success);
         Throwable exception = assertThrows(EntityNotFoundException.class, () -> service.getById(bike.getId()));
         assertEquals("Unable to find com.bike.model.Bike with id " + bike.getId(), exception.getMessage());
-        Set<Bike> bikeOffers = user.getBikeOffers();
-        // TODO make sure this test works - and add similar check to SaveBike()
-        assertThat(!bikeOffers.contains(bike));
     }
 
     @Test

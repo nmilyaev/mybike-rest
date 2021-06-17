@@ -48,11 +48,6 @@ public class BikeService {
      */
     public boolean deleteBike(UUID bikeId) {
         try {
-            // TODO - make sure this works
-            Bike bike = getById(bikeId);
-            MybikeUser owner = bike.getOwner();
-            Set<Bike> bikeOffers = owner.getBikeOffers();
-            bikeOffers.remove(bike);
             bikeRepository.deleteById(bikeId);
         } catch (EmptyResultDataAccessException | EntityNotFoundException ex) {
             return false;

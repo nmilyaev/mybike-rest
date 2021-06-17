@@ -1,8 +1,8 @@
 package com.bike.service;
 
 import com.bike.BorrowMyBikeApplication;
+import com.bike.model.Bike;
 import com.bike.model.MybikeUser;
-import com.bike.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,7 +26,7 @@ public class MybikeUserServiceIntegrationTest extends BasicServiceIntegrationTes
     private UserService userService;
 
     @Autowired
-    BikeService bikeService;
+    private BikeService bikeService;
 
     private MybikeUser user;
 
@@ -105,4 +106,15 @@ public class MybikeUserServiceIntegrationTest extends BasicServiceIntegrationTes
                 .isEqualTo(saved2);
     }
 
+    @Test
+    void shouldReturnAllBikesForUser() {
+        MybikeUser saved = userService.createUser(user);
+        Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
+        bikeService.addNewBike(bike);
+        List<Bike> userBikes = userService.getUserBikes(saved);
+        assertEquals(1, userBikes.size());
+        assertThat(userBikes.get(0))
+                .usingRecursiveComparison()
+                .isEqualTo(bike);
+    }
 }

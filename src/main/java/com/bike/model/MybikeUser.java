@@ -52,14 +52,6 @@ public class MybikeUser {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(
-            name = "bike_offer",
-            joinColumns = @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "bike_offer_user_id")),
-            inverseJoinColumns = @JoinColumn(name = "bike_id", foreignKey = @ForeignKey(name = "bike_offer_bike_id"))
-    )
-    private Set<Bike> bikeOffers = new HashSet<>();
-
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(
             name = "bike_hire",
             joinColumns = @JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "bike_hire_borrower_id")),
             inverseJoinColumns = @JoinColumn(name = "bike_id", foreignKey = @ForeignKey(name = "bike_hire_bike_id"))
