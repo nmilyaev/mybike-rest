@@ -6,13 +6,11 @@ import com.bike.repository.BikeRepository;
 import com.bike.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 @Slf4j
@@ -47,22 +45,15 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    /**
-     * Deletes a user by id
-     *
-     * @param userId - searched id
-     * @return true or false depending on the success of the operation (i.e. whether the entry is found)
-     */
-    public boolean deleteUser(UUID userId) {
-        try {
-            userRepository.deleteById(userId);
-        } catch (EmptyResultDataAccessException ex) {
-            return false;
-        }
-        return true;
+    public void deleteUser(UUID userId) {
+        userRepository.deleteById(userId);
     }
 
-    public List<Bike> getUserBikes(MybikeUser user){
+    public void deleteAll() {
+        userRepository.deleteAll();
+    }
+
+    public List<Bike> getUserBikes(MybikeUser user) {
         return bikeRepository.findAllByOwner(user);
     }
 }

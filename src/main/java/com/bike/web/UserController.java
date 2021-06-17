@@ -44,11 +44,13 @@ public class UserController {
 
     @DeleteMapping
     public ResponseEntity<Boolean> deleteUser(@PathVariable UUID userId) {
-        boolean result = userService.deleteUser(userId);
-        if (result) {
-            return new ResponseEntity<>(result, CREATED);
-        } else {
-            return new ResponseEntity<>(result, NOT_FOUND);
+        // TODO - add proper exception handler
+        try {
+            userService.deleteUser(userId);
+            return new ResponseEntity<>(CREATED);
+        }
+        catch (Exception ex){
+            return new ResponseEntity<>(NOT_FOUND);
         }
     }
 }

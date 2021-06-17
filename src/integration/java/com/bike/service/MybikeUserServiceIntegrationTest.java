@@ -8,9 +8,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import javax.persistence.EntityNotFoundException;
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
@@ -58,18 +58,17 @@ public class MybikeUserServiceIntegrationTest extends BasicServiceIntegrationTes
     @Test
     void shouldDeleteUser() {
         userService.createUser(user);
-        boolean success = userService.deleteUser(user.getId());
-        assertTrue(success);
+        userService.deleteUser(user.getId());
         Throwable exception = assertThrows(EntityNotFoundException.class, () -> userService.getById(user.getId()));
         assertEquals("Unable to find com.bike.model.MybikeUser with id " + user.getId(), exception.getMessage());
     }
 
     @Test
-    @Transactional
     void shouldNotDeleteUserByWrongId() {
         userService.createUser(user);
-        boolean success = userService.deleteUser(UUID.randomUUID());
-        assertFalse(success);
+        UUID randId = UUID.randomUUID();
+        Throwable exception = assertThrows(EmptyResultDataAccessException.class, () -> userService.deleteUser(randId));
+        assertEquals("No class com.bike.model.MybikeUser entity with id " + randId + " exists!", exception.getMessage());
         MybikeUser loaded = userService.getById(user.getId());
         assertNotNull(loaded.getId());
         assertThat(loaded)

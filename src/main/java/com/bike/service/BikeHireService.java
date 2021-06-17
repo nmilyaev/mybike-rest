@@ -4,8 +4,6 @@ import com.bike.model.BikeHire;
 import com.bike.repository.BikeHireRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
@@ -24,21 +22,16 @@ public class BikeHireService {
         this.repository = repository;
     }
 
-    public List<BikeHire> getList() {
+    public BikeHire getById(Long id) throws EntityNotFoundException {
+        return repository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException("Unable to find com.bike.model.BikeHire with id " + id));
+    }
+
+    public List<BikeHire> getAllHires() {
         return repository.findAll();
     }
 
-    public BikeHire getById(Long id) throws EntityNotFoundException {
-        BikeHire hire;
-        try {
-            hire = repository.getOne(id);
-        } catch (JpaObjectRetrievalFailureException ex) {
-            throw new EntityNotFoundException(ex.getCause().getMessage());
-        }
-        return hire;
-    }
-
-    public BikeHire createHire(BikeHire hire) {
+    public BikeHire saveHire(BikeHire hire) {
         checkIfHireValid(hire);
         return repository.save(hire);
     }
@@ -49,19 +42,7 @@ public class BikeHireService {
         return true;
     }
 
-    /**
-     * Cancels a bike hire by id
-     *
-     * @param hireId - searched id
-     * @return true or false depending on the success of the operation (i.e. whether the entry is found)
-     */
-    public boolean cancelHire(Long hireId) {
-        try {
-            repository.deleteById(hireId);
-        }
-        catch (EmptyResultDataAccessException ex){
-            return false;
-        }
-        return true;
+    public void cancelHire(Long hireId) {
+        repository.deleteById(hireId);
     }
 }

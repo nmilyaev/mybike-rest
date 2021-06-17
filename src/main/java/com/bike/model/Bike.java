@@ -14,7 +14,6 @@ import java.util.UUID;
 
 @Getter
 @Setter
-//@ToString
 @NoArgsConstructor
 @EqualsAndHashCode(of = {"id"})
 @Entity(name = "Bike")
@@ -83,8 +82,7 @@ public class Bike {
 
     @Override
     public String toString() {
-        return "Bike{" +
-                ", id=" + id +
+        return "Bike{id=" + id +
                 ", make='" + make + '\'' +
                 ", model='" + model + '\'' +
                 ", value=" + value +

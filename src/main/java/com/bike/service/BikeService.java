@@ -1,17 +1,14 @@
 package com.bike.service;
 
 import com.bike.model.Bike;
-import com.bike.model.MybikeUser;
 import com.bike.repository.BikeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 @Slf4j
@@ -36,26 +33,10 @@ public class BikeService {
     }
 
     public Bike addNewBike(Bike bike) {
-        //TODO: add bike to the user
         return bikeRepository.save(bike);
     }
 
-    /**
-     * Deletes a bike by id
-     *
-     * @param bikeId - searched id
-     * @return true or false depending on the success of the operation (i.e. whether the entry is found)
-     */
-    public boolean deleteBike(UUID bikeId) {
-        try {
-            bikeRepository.deleteById(bikeId);
-        } catch (EmptyResultDataAccessException | EntityNotFoundException ex) {
-            return false;
-        }
-        return true;
-    }
-
-    public void deleteAll() {
-        bikeRepository.deleteAll();
+    public void deleteBike(UUID bikeId) {
+        bikeRepository.deleteById(bikeId);
     }
 }

@@ -45,31 +45,33 @@ public class BikeHireServiceIntegrationTest extends BasicServiceIntegrationTest 
         userService.createUser(borrower);
         bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), owner);
         bikeService.addNewBike(bike);
-//        bike = bikeService.getById(bike.getId());
-//        borrower = userService.getById(borrower.getId());
-//        owner = userService.getById(owner.getId());
     }
 
     @Test
     void shouldCreateBikeHire() {
-        BikeHire hire = BikeHire.builder()
-                .bike(bike)
-                .borrower(borrower)
-                .deposit(BigDecimal.valueOf(80.00))
-                .dailyRate(BigDecimal.valueOf(10.00))
-                .firstDay(now)
-                .lastDay(now.plusDays(2))
-                .build();
-        BikeHire saved = service.createHire(hire);
-        assertNotNull(saved.getId());
-        assertThat(saved)
-                .usingRecursiveComparison()
-                .isEqualTo(hire);
+        createAndVerifyBikeHire();
     }
 
     @Test
-//    @Transactional
     void shouldCancelBikeHire() {
+        BikeHire hire = createAndVerifyBikeHire();
+        Long id = hire.getId();
+        assertNotNull(id);
+        service.cancelHire(id);
+        Throwable exception = assertThrows(EntityNotFoundException.class, () -> service.getById(id));
+        assertEquals("Unable to find com.bike.model.BikeHire with id " + id, exception.getMessage());
+    }
+
+    @Test
+    void shouldNotFindNonExistingBikeHire() {
+        BikeHire hire = createAndVerifyBikeHire();
+        Long id = hire.getId() + 1;
+        assertNotNull(id);
+        Throwable exception = assertThrows(EntityNotFoundException.class, () -> service.getById(id));
+        assertEquals("Unable to find com.bike.model.BikeHire with id " + id, exception.getMessage());
+    }
+
+    private BikeHire createAndVerifyBikeHire() {
         BikeHire hire = BikeHire.builder()
                 .bike(bike)
                 .borrower(borrower)
@@ -78,14 +80,11 @@ public class BikeHireServiceIntegrationTest extends BasicServiceIntegrationTest 
                 .firstDay(now)
                 .lastDay(now.plusDays(2))
                 .build();
-        BikeHire saved = service.createHire(hire);
+        BikeHire saved = service.saveHire(hire);
         assertNotNull(saved.getId());
         assertThat(saved)
                 .usingRecursiveComparison()
                 .isEqualTo(hire);
-        boolean success = service.cancelHire(saved.getId());
-        assertTrue(success);
-        Throwable exception = assertThrows(EntityNotFoundException.class, () -> service.getById(saved.getId()));
-        assertEquals("Unable to find com.bike.model.BikeHire with id " + saved.getId(), exception.getMessage());
+        return saved;
     }
 }

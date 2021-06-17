@@ -5,10 +5,10 @@ import com.bike.model.MybikeUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
-import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -56,8 +56,7 @@ public class BikeServiceIntegrationTest extends BasicServiceIntegrationTest {
         Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
         service.addNewBike(bike);
         assertNotNull(bike.getId());
-        boolean success = service.deleteBike(bike.getId());
-        assertTrue(success);
+        service.deleteBike(bike.getId());
         Throwable exception = assertThrows(EntityNotFoundException.class, () -> service.getById(bike.getId()));
         assertEquals("Unable to find com.bike.model.Bike with id " + bike.getId(), exception.getMessage());
     }
@@ -66,8 +65,9 @@ public class BikeServiceIntegrationTest extends BasicServiceIntegrationTest {
     void shouldNotDeleteBikeByWrongId() {
         Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
         service.addNewBike(bike);
-        boolean success = service.deleteBike(UUID.randomUUID());
-        assertFalse(success);
+        UUID randId = UUID.randomUUID();
+        Throwable exception = assertThrows(EmptyResultDataAccessException.class, () -> service.deleteBike(randId));
+        assertEquals("No class com.bike.model.Bike entity with id " + randId + " exists!", exception.getMessage());
         Bike loaded = service.getById(bike.getId());
         assertNotNull(loaded.getId());
         assertThat(loaded)
