@@ -77,8 +77,8 @@ public class BikeHireServiceIntegrationTest extends BasicServiceIntegrationTest 
                 .borrower(borrower)
                 .deposit(BigDecimal.valueOf(80.00))
                 .dailyRate(BigDecimal.valueOf(10.00))
-                .firstDay(now)
-                .lastDay(now.plusDays(2))
+                .startDate(now)
+                .endDate(now.plusDays(2))
                 .build();
         BikeHire saved = service.saveHire(hire);
         assertNotNull(saved.getId());

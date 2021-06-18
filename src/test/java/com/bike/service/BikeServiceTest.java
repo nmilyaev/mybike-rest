@@ -1,9 +1,8 @@
-package com.bike;
+package com.bike.service;
 
 import com.bike.model.Bike;
 import com.bike.model.MybikeUser;
 import com.bike.repository.BikeRepository;
-import com.bike.service.BikeService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

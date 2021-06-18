@@ -1,5 +1,6 @@
 package com.bike.service;
 
+import com.bike.model.Bike;
 import com.bike.model.BikeHire;
 import com.bike.repository.BikeHireRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -8,7 +9,11 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.time.LocalDate.now;
 
 @Slf4j
 @Service
@@ -36,10 +41,29 @@ public class BikeHireService {
         return repository.save(hire);
     }
 
-    // TODO - fill in the logic. Check if there is already a hire for this bike for the
-    // given dates
-    private boolean checkIfHireValid(BikeHire hire) {
-        return true;
+    //  1. Check the new hire is not in the past
+    //  2. Check that start date is before end date
+    //  3. Check if there is already a hire for this bike for the given dates
+    private void checkIfHireValid(BikeHire hire) {
+        LocalDate today = now();
+        // 1. Check the new hire is not in the past
+        if (hire.getStartDate().isBefore(today)) {
+            throw new IllegalArgumentException("New hire start date cannot be in the past");
+        }
+        // 2. Check that start date is before end date; Minimum hire is one day when firstDay = lastDay
+        if (hire.getEndDate().isBefore(hire.getStartDate())) {
+            throw new IllegalArgumentException("New hire first day cannot be before the last day");
+        }
+        // 3. Check if there is already a hire for this bike for the given dates.
+        // A new hire is only allowed to start next day after previous hire finished.
+        Bike bike = hire.getBike();
+        List<BikeHire> futureHiresForBike = repository.findAllByBikeAndStartDateNowOrLater(bike, today);
+        List<BikeHire> foundConflictingHires = futureHiresForBike.stream().filter(bh ->
+                !hire.getStartDate().isAfter(bh.getEndDate()) && !hire.getEndDate().isBefore(bh.getStartDate())
+        ).collect(Collectors.toList());
+        if (foundConflictingHires.size() > 0) {
+            throw new IllegalArgumentException("The bike is already booked for the dates specified");
+        }
     }
 
     public void cancelHire(Long hireId) {

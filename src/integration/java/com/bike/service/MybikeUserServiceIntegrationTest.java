@@ -2,6 +2,7 @@ package com.bike.service;
 
 import com.bike.BorrowMyBikeApplication;
 import com.bike.model.Bike;
+import com.bike.model.BikeHire;
 import com.bike.model.MybikeUser;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,9 +13,11 @@ import org.springframework.dao.EmptyResultDataAccessException;
 
 import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
+import static java.time.LocalDate.now;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,6 +30,9 @@ public class MybikeUserServiceIntegrationTest extends BasicServiceIntegrationTes
 
     @Autowired
     private BikeService bikeService;
+
+    @Autowired
+    private BikeHireService bikeHireService;
 
     private MybikeUser user;
 
@@ -106,14 +112,44 @@ public class MybikeUserServiceIntegrationTest extends BasicServiceIntegrationTes
     }
 
     @Test
-    void shouldReturnAllBikesForUser() {
+    void shouldReturnAllBikesOwnerByUser() {
         MybikeUser saved = userService.createUser(user);
-        Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
-        bikeService.addNewBike(bike);
+        Bike bike1 = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
+        Bike bike2 = new Bike("Dawes", "Galaxy", BigDecimal.valueOf(120.00), user);
+        bikeService.addNewBike(bike1);
+        bikeService.addNewBike(bike2);
         List<Bike> userBikes = userService.getUserBikes(saved);
-        assertEquals(1, userBikes.size());
+        assertEquals(2, userBikes.size());
         assertThat(userBikes.get(0))
                 .usingRecursiveComparison()
-                .isEqualTo(bike);
+                .isEqualTo(bike1);
+        assertThat(userBikes.get(1))
+                .usingRecursiveComparison()
+                .isEqualTo(bike2);
+    }
+
+    @Test
+    void shouldReturnAllHiresForUser(){
+        LocalDate now = now();
+        MybikeUser owner = MybikeUser.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password");
+        userService.createUser(owner);
+        MybikeUser borrower = MybikeUser.createWithRequiredFields("Paul", "Smith", "p.s@mail.com", "SW8 1NR", "password");
+        userService.createUser(borrower);
+        Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), owner);
+        bikeService.addNewBike(bike);
+        BikeHire hire = BikeHire.builder()
+                .bike(bike)
+                .borrower(borrower)
+                .deposit(BigDecimal.valueOf(80.00))
+                .dailyRate(BigDecimal.valueOf(10.00))
+                .startDate(now)
+                .endDate(now.plusDays(2))
+                .build();
+        bikeHireService.saveHire(hire);
+        List<BikeHire> userHires = userService.getUserHires(borrower);
+        assertEquals(1, userHires.size());
+        assertThat(userHires.get(0))
+                .usingRecursiveComparison()
+                .isEqualTo(hire);
     }
 }

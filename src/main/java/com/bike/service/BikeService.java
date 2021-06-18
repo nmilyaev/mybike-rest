@@ -1,6 +1,8 @@
 package com.bike.service;
 
 import com.bike.model.Bike;
+import com.bike.model.BikeHire;
+import com.bike.repository.BikeHireRepository;
 import com.bike.repository.BikeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,8 +10,13 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static java.time.LocalDate.now;
+import static java.util.stream.Collectors.toList;
 
 @Slf4j
 @Service
@@ -17,10 +24,13 @@ import java.util.UUID;
 public class BikeService {
 
     private final BikeRepository bikeRepository;
+    private final BikeHireRepository bikeHireRepository;
 
     @Autowired
-    public BikeService(BikeRepository bikeRepository) {
+    public BikeService(BikeRepository bikeRepository,
+                       BikeHireRepository bikeHireRepository) {
         this.bikeRepository = bikeRepository;
+        this.bikeHireRepository = bikeHireRepository;
     }
 
     public List<Bike> getList() {
@@ -38,5 +48,14 @@ public class BikeService {
 
     public void deleteBike(UUID bikeId) {
         bikeRepository.deleteById(bikeId);
+    }
+
+    public List<BikeHire> getHiresForBike(Bike bike) {
+        return bikeHireRepository.findAllByBike(bike);
+    }
+
+    public List<BikeHire> getFutureHiresForBike(Bike bike) {
+        LocalDate today = now();
+        return bikeHireRepository.findAllByBikeAndStartDateNowOrLater(bike, today);
     }
 }

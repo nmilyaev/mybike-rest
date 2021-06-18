@@ -19,7 +19,9 @@ import java.util.UUID;
 @Entity(name = "Bike")
 @Table(name = "bike")
 public class Bike {
+    @Transient
     private final int SCALE = 2;
+    @Transient
     private final RoundingMode ROUNDING_MODE = RoundingMode.CEILING;
 
     @Id
