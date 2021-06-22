@@ -54,10 +54,6 @@ public class UserService {
         userRepository.deleteById(userId);
     }
 
-    public void deleteAll() {
-        userRepository.deleteAll();
-    }
-
     public List<Bike> getUserBikes(MybikeUser user) {
         return bikeRepository.findAllByOwner(user);
     }

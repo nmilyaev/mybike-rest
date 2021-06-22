@@ -7,17 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 
-import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @Slf4j
 @RestController
 @RequestMapping("/user")
-@Transactional
 public class UserController {
     private final UserService userService;
 
@@ -42,14 +40,13 @@ public class UserController {
         return userService.createUser(user);
     }
 
-    @DeleteMapping
+    @DeleteMapping(value = "/{userId}")
     public ResponseEntity<Boolean> deleteUser(@PathVariable UUID userId) {
         // TODO - add proper exception handler
         try {
             userService.deleteUser(userId);
-            return new ResponseEntity<>(CREATED);
-        }
-        catch (Exception ex){
+            return new ResponseEntity<>(NO_CONTENT);
+        } catch (Exception ex) {
             return new ResponseEntity<>(NOT_FOUND);
         }
     }
