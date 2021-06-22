@@ -2,7 +2,9 @@ package com.bike.web;
 
 import com.bike.BorrowMyBikeApplication;
 import com.bike.model.MybikeUser;
+import com.bike.repository.BikeRepository;
 import com.bike.repository.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,11 +24,19 @@ public class AbstractControllerIntegrationTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private BikeRepository bikeRepository;
+
     MybikeUser user;
 
     @BeforeEach
     void setUp() {
-        userRepository.deleteAll();
         user = MybikeUser.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password");
+    }
+
+    @AfterEach
+    void cleanUp() {
+        bikeRepository.deleteAll();
+        userRepository.deleteAll();
     }
 }

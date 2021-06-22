@@ -4,7 +4,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -33,10 +32,10 @@ public class Bike {
     @Column(name = "bike_id", updatable = false, nullable = false)
     private UUID id;
 
-    @Column(name = "make", length=100)
+    @Column(name = "make", length = 100)
     private String make;
 
-    @Column(name = "model", length=100)
+    @Column(name = "model", length = 100)
     private String model;
 
     @Column(name = "value", precision = 8, scale = 2)
@@ -49,7 +48,7 @@ public class Bike {
     private BigDecimal dailyRate;
 
     @ManyToOne
-    @JoinColumn(name="owner_id", nullable=false, foreignKey=@ForeignKey(name="bike_owner_id"))
+    @JoinColumn(name = "owner_id", nullable = false, foreignKey = @ForeignKey(name = "bike_owner_id"))
     private MybikeUser owner;
 
     public Bike(UUID id, String make, String model, BigDecimal value, MybikeUser user) {
@@ -62,12 +61,8 @@ public class Bike {
         this.model = model;
         this.value = value;
         this.owner = user;
-    }
-
-    public Bike(String make, String model, BigDecimal value) {
-        this.make = make;
-        this.model = model;
-        this.value = value;
+        this.deposit = BigDecimal.ZERO;
+        this.dailyRate = BigDecimal.ZERO;
     }
 
     public BigDecimal getValue() {
