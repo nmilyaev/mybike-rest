@@ -4,14 +4,10 @@ import com.bike.model.MybikeUser;
 import com.bike.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
-
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @Slf4j
 @RestController
@@ -36,19 +32,12 @@ public class UserController {
 
     @PostMapping(value = "/createUser", consumes = "application/json", produces = "application/json")
     public MybikeUser createUser(@RequestBody MybikeUser user) {
-        log.info(".............User: {}", user);
         return userService.createUser(user);
     }
 
     @DeleteMapping(value = "/{userId}")
-    public ResponseEntity<Boolean> deleteUser(@PathVariable UUID userId) {
-        // TODO - add proper exception handler
-        try {
-            userService.deleteUser(userId);
-            return new ResponseEntity<>(NO_CONTENT);
-        } catch (Exception ex) {
-            return new ResponseEntity<>(NOT_FOUND);
-        }
+    public void deleteUser(@PathVariable UUID userId) {
+        userService.deleteUser(userId);
     }
 }
 

@@ -4,14 +4,18 @@ import com.bike.model.MybikeUser;
 import com.bike.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.web.servlet.MockMvc;
 
 import javax.persistence.EntityNotFoundException;
 import java.net.URI;
 import java.util.Objects;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
 
 public class UserControllerIntegrationTest extends AbstractControllerIntegrationTest {
@@ -31,6 +35,8 @@ public class UserControllerIntegrationTest extends AbstractControllerIntegration
                 .usingRecursiveComparison()
                 .isEqualTo(user);
     }
+
+    // TODO - add test for duplicated user creation
 
     @Test
     void getUserList() {
@@ -59,5 +65,15 @@ public class UserControllerIntegrationTest extends AbstractControllerIntegration
         restTemplate.delete(URI.create("http://localhost:" + serverPort + "/user/" + user.getId()));
         Throwable exception = assertThrows(EntityNotFoundException.class, () -> service.getById(user.getId()));
         assertEquals("Unable to find com.bike.model.MybikeUser with id " + user.getId(), exception.getMessage());
+    }
+
+    @Test
+    void shouldNotDeleteNonexistingUser() {
+        service.createUser(user);
+        restTemplate.delete(URI.create("http://localhost:" + serverPort + "/user/" + UUID.randomUUID()));
+        MybikeUser restUser = service.getById(user.getId());
+        assertThat(restUser)
+                .usingRecursiveComparison()
+                .isEqualTo(user);
     }
 }

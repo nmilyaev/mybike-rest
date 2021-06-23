@@ -45,13 +45,18 @@ public class UserService {
     public MybikeUser createUser(MybikeUser user) {
         MybikeUser userWithSameEmail = userRepository.findByEmail(user.getEmail());
         if (userWithSameEmail != null) {
-            throw new IllegalArgumentException("User with this email already exists: " + userWithSameEmail.getId());
+            throw new IllegalArgumentException("User with this email already exists: " + userWithSameEmail.getEmail());
         }
         return userRepository.save(user);
     }
 
     public void deleteUser(UUID userId) {
-        userRepository.deleteById(userId);
+        try{
+            userRepository.deleteById(userId);
+        }
+        catch(Exception ex){
+            throw new EntityNotFoundException("Unable to delete user with id " + userId);
+        }
     }
 
     public List<Bike> getUserBikes(MybikeUser user) {

@@ -73,8 +73,8 @@ public class MybikeUserServiceIntegrationTest extends BasicServiceIntegrationTes
     void shouldNotDeleteUserByWrongId() {
         userService.createUser(user);
         UUID randId = UUID.randomUUID();
-        Throwable exception = assertThrows(EmptyResultDataAccessException.class, () -> userService.deleteUser(randId));
-        assertEquals("No class com.bike.model.MybikeUser entity with id " + randId + " exists!", exception.getMessage());
+        Throwable exception = assertThrows(EntityNotFoundException.class, () -> userService.deleteUser(randId));
+        assertEquals("Unable to delete user with id " + randId, exception.getMessage());
         MybikeUser loaded = userService.getById(user.getId());
         assertNotNull(loaded.getId());
         assertThat(loaded)
@@ -89,7 +89,7 @@ public class MybikeUserServiceIntegrationTest extends BasicServiceIntegrationTes
         user = MybikeUser.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password");
         assertNull(user.getId());
         Throwable exception = assertThrows(IllegalArgumentException.class, () -> userService.createUser(user));
-        assertEquals("User with this email already exists: " + saved.getId(), exception.getMessage());
+        assertEquals("User with this email already exists: " + saved.getEmail(), exception.getMessage());
     }
 
     @Test
