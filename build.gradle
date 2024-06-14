@@ -11,32 +11,32 @@ java {
     sourceCompatibility = '17'
 }
 
-//sourceSets {
-//    main {
-//        java.srcDirs('./src/main/java')
-//        resources.srcDirs('./src/main/resources')
-//    }
-//    test {
-//        java.srcDirs('./src/test/java')
-//        resources.srcDirs('./src/test/resources')
-//    }
-//    integrationTest {
-//        java {
-//            compileClasspath += main.output + test.output
-//            runtimeClasspath += main.output + test.output
-//            srcDir file('src/integration/java')
-//        }
-//        resources.srcDirs('./src/integration/resources')
-//    }
-//}
+sourceSets {
+    main {
+        java.srcDirs('./src/main/java')
+        resources.srcDirs('./src/main/resources')
+    }
+    test {
+        java.srcDirs('./src/test/java')
+        resources.srcDirs('./src/test/resources')
+    }
+    integrationTest {
+        java {
+            compileClasspath += main.output + test.output
+            runtimeClasspath += main.output + test.output
+            srcDir file('src/integration/java')
+        }
+        resources.srcDirs('./src/integration/resources')
+    }
+}
 
-//task integrationTest(type: Test) {
-//    testClassesDirs = sourceSets.integrationTest.output.classesDirs
-//    classpath = sourceSets.integrationTest.runtimeClasspath
-//    //If you want to ensure that integration tests are run every time when you invoke
-//    //this task, uncomment the following line.
-//    //outputs.upToDateWhen { false }
-//}
+tasks.register('integrationTest', Test) {
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+    //If you want to ensure that integration tests are run every time when you invoke
+    //this task, uncomment the following line.
+    //outputs.upToDateWhen { false }
+}
 
 configurations {
     compileOnly {
@@ -68,6 +68,6 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok'
 }
 
-jar {
+tasks.withType(ProcessResources).configureEach {
     duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
 }
