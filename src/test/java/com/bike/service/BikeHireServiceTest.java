@@ -4,7 +4,6 @@ import com.bike.model.Bike;
 import com.bike.model.BikeHire;
 import com.bike.model.MybikeUser;
 import com.bike.repository.BikeHireRepository;
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,7 +39,7 @@ public class BikeHireServiceTest {
     private MybikeUser borrower;
 
     @BeforeEach
-    private void setUpRepository() {
+    public void setUpRepository() {
         bikes = new ArrayList<>();
         bikeHires = new ArrayList<>();
         owner = new MybikeUser();

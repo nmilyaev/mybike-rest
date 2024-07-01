@@ -1,13 +1,15 @@
 plugins {
-    id 'org.springframework.boot' version '2.4.3'
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
-    id 'idea'
+    id 'org.springframework.boot' version '3.3.0'
+    id 'io.spring.dependency-management' version '1.1.5'
 }
 
 group = 'java.bike'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '8'
+
+java {
+    sourceCompatibility = '17'
+}
 
 sourceSets {
     main {
@@ -28,7 +30,7 @@ sourceSets {
     }
 }
 
-task integrationTest(type: Test) {
+tasks.register('integrationTest', Test) {
     testClassesDirs = sourceSets.integrationTest.output.classesDirs
     classpath = sourceSets.integrationTest.runtimeClasspath
     //If you want to ensure that integration tests are run every time when you invoke
@@ -36,35 +38,36 @@ task integrationTest(type: Test) {
     //outputs.upToDateWhen { false }
 }
 
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
 repositories {
     mavenCentral()
 }
 
-tasks.withType(Test) {
-    useJUnitPlatform()
-    jvmArgs '--enable-preview'
-}
-
 dependencies {
-    compile 'org.springframework.boot:spring-boot-starter-data-jpa'
-    compile 'org.springframework.boot:spring-boot-starter-web'
-    compile 'org.projectlombok:lombok'
-    compile 'org.flywaydb:flyway-core'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'jakarta.persistence:jakarta.persistence-api:3.2.0'
+    compileOnly 'org.projectlombok:lombok'
+    compileOnly 'org.flywaydb:flyway-core'
     runtimeOnly 'org.postgresql:postgresql'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testRuntimeOnly 'com.h2database:h2'
-    testCompile 'org.springframework.boot:spring-boot-starter-test'
-    testCompile 'org.junit.jupiter:junit-jupiter:5.7.1'
-    testCompile 'org.springframework.data:spring-data-commons'
-    testCompile 'org.assertj:assertj-core'
-
-    integrationTestCompile sourceSets.main.output
-    integrationTestCompile sourceSets.test.output
-    integrationTestCompile configurations.compile
-    integrationTestCompile configurations.testCompile
-    integrationTestRuntime configurations.runtime
-    integrationTestRuntime configurations.testRuntimeOnly
-    integrationTestAnnotationProcessor configurations.testAnnotationProcessor
+    testCompileOnly 'org.assertj:assertj-core'
+    testCompileOnly 'org.projectlombok:lombok'
+    testCompileOnly 'org.springframework.data:spring-data-commons'
 
     annotationProcessor 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
+}
+
+tasks.withType(ProcessResources).configureEach {
+    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
 }
