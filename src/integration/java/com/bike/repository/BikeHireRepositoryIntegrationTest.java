@@ -1,11 +1,15 @@
 package com.bike.repository;
 
+import com.bike.BorrowMyBikeApplication;
 import com.bike.model.Bike;
 import com.bike.model.BikeHire;
 import com.bike.model.MybikeUser;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -15,7 +19,11 @@ import static java.time.LocalDate.now;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DataJpaTest
+//@DataJpaTest
+//@ContextConfiguration(classes = BorrowMyBikeApplication.class)
+@SpringBootTest(classes = BorrowMyBikeApplication.class)
+@ActiveProfiles("integrationtest")
+@ExtendWith(MockitoExtension.class)
 public class BikeHireRepositoryIntegrationTest {
     @Autowired
     BikeHireRepository repository;
@@ -62,7 +70,7 @@ public class BikeHireRepositoryIntegrationTest {
         repository.save(hire3);
         List<BikeHire> allByBikeAndStartDateNowOrLater = repository.findAllByBikeAndStartDateNowOrLater(bike2, now);
         assertEquals(1, allByBikeAndStartDateNowOrLater.size());
-        assertThat(allByBikeAndStartDateNowOrLater.get(0))
+        assertThat(allByBikeAndStartDateNowOrLater.getFirst())
                 .usingRecursiveComparison()
                 .isEqualTo(hire2);
     }

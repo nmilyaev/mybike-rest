@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 
-import javax.persistence.EntityNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.time.*;
 import java.util.List;
@@ -18,8 +18,6 @@ import java.util.UUID;
 import static java.time.LocalDate.now;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 
 public class BikeServiceIntegrationTest extends BasicServiceIntegrationTest {
 
@@ -108,7 +106,7 @@ public class BikeServiceIntegrationTest extends BasicServiceIntegrationTest {
         bikeHireService.saveHire(hire);
         List<BikeHire> hiresForBike = bikeService.getHiresForBike(bike);
         assertEquals(1, hiresForBike.size());
-        assertThat(hiresForBike.get(0))
+        assertThat(hiresForBike.getFirst())
                 .usingRecursiveComparison()
                 .isEqualTo(hire);
     }
@@ -142,7 +140,7 @@ public class BikeServiceIntegrationTest extends BasicServiceIntegrationTest {
         assertEquals(2, allHires.size());
         List<BikeHire> hiresForBike = bikeService.getFutureHiresForBike(bike);
         assertEquals(1, hiresForBike.size());
-        assertThat(hiresForBike.get(0))
+        assertThat(hiresForBike.getFirst())
                 .usingRecursiveComparison()
                 .isEqualTo(hire2);
     }

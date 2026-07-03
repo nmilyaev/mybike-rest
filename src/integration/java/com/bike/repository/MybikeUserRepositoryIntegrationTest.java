@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -42,9 +42,9 @@ public class MybikeUserRepositoryIntegrationTest {
     @Transactional
     void shouldSaveAndLoadUser() {
         MybikeUser saved = repository.save(user);
-        MybikeUser loaded = repository.getOne(saved.getId());
+        MybikeUser loaded = repository.getReferenceById(saved.getId());
         assertNotNull(saved.getId());
-        assertThat(saved)
+        assertThat(loaded)
                 .usingRecursiveComparison()
                 .isEqualTo(user);
     }
@@ -54,7 +54,7 @@ public class MybikeUserRepositoryIntegrationTest {
     void shouldDeleteUser() {
         MybikeUser saved = repository.save(user);
         repository.delete(saved);
-        Throwable exception = assertThrows(JpaObjectRetrievalFailureException.class, () -> repository.getOne(saved.getId()));
+        Throwable exception = assertThrows(JpaObjectRetrievalFailureException.class, () -> repository.getReferenceById(saved.getId()));
         assertEquals("Unable to find com.bike.model.MybikeUser with id " + saved.getId(), exception.getCause().getMessage());
     }
 }

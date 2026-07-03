@@ -1,14 +1,19 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.3.0'
-    id 'io.spring.dependency-management' version '1.1.5'
+    id 'org.springframework.boot' version '3.4.0'
+    id 'io.spring.dependency-management' version '1.1.6'
 }
 
 group = 'java.com.bike'
 version = '0.0.1-SNAPSHOT'
 
 java {
-    sourceCompatibility = '25'
+    sourceCompatibility = '21'
+    targetCompatibility = '21'
+}
+
+springBoot {
+    mainClass = 'com.bike.BorrowMyBikeApplication'
 }
 
 sourceSets {
@@ -32,15 +37,31 @@ sourceSets {
 
 tasks.register('integrationTest', Test) {
     testClassesDirs = sourceSets.integrationTest.output.classesDirs
-    classpath = sourceSets.integrationTest.runtimeClasspath
+    classpath = sourceSets.integrationTest.runtimeClasspath + files(sourceSets.main.output, sourceSets.test.output)
+    useJUnitPlatform()
+    failOnNoDiscoveredTests = false
+    systemProperty 'spring.classformat.ignore', 'true'
+    systemProperty 'spring.classformat.ignore', 'true'
+    systemProperty 'spring.jpa.hibernate.ddl-auto', 'create-drop'
+    systemProperty 'spring.datasource.url', 'jdbc:h2:mem:testdb'
     //If you want to ensure that integration tests are run every time when you invoke
     //this task, uncomment the following line.
     //outputs.upToDateWhen { false }
 }
 
+test {
+    failOnNoDiscoveredTests = false
+}
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
+    }
+    integrationTestCompileOnly {
+        extendsFrom testCompileOnly
+    }
+    integrationTestAnnotationProcessor {
+        extendsFrom testAnnotationProcessor
     }
 }
 
@@ -53,7 +74,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-rest'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'jakarta.persistence:jakarta.persistence-api:3.2.0'
-    compileOnly 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok:1.18.40'
     compileOnly 'org.flywaydb:flyway-core'
     runtimeOnly 'org.postgresql:postgresql'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -61,11 +82,20 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testRuntimeOnly 'com.h2database:h2'
     testCompileOnly 'org.assertj:assertj-core'
-    testCompileOnly 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok:1.18.40'
     testCompileOnly 'org.springframework.data:spring-data-commons'
 
-    annotationProcessor 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
+    integrationTestImplementation 'org.springframework.boot:spring-boot-starter-test'
+    integrationTestImplementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    integrationTestImplementation 'org.springframework.boot:spring-boot-starter-web'
+    integrationTestRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    integrationTestRuntimeOnly 'com.h2database:h2'
+    integrationTestCompileOnly 'org.projectlombok:lombok:1.18.40'
+    integrationTestCompileOnly 'org.springframework.data:spring-data-commons'
+
+    annotationProcessor 'org.projectlombok:lombok:1.18.40'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.40'
+    integrationTestAnnotationProcessor 'org.projectlombok:lombok:1.18.40'
 }
 
 tasks.withType(ProcessResources).configureEach {

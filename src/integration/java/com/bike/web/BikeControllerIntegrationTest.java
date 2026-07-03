@@ -1,14 +1,13 @@
 package com.bike.web;
 
 import com.bike.model.Bike;
-import com.bike.model.MybikeUser;
 import com.bike.service.BikeService;
 import com.bike.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
-import javax.persistence.EntityNotFoundException;
+import jakarta.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.util.Objects;
