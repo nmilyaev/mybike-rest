@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @EqualsAndHashCode(of = {"id"})
 @Builder
 @Entity(name = "BikeHire")
-@Table(name = "bike_hire")
+@Table(name = "bike_hire", schema = "mybike")
 public class BikeHire {
     @Transient
     private final int SCALE = 2;

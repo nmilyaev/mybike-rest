@@ -40,10 +40,6 @@ tasks.register('integrationTest', Test) {
     classpath = sourceSets.integrationTest.runtimeClasspath + files(sourceSets.main.output, sourceSets.test.output)
     useJUnitPlatform()
     failOnNoDiscoveredTests = false
-    systemProperty 'spring.classformat.ignore', 'true'
-    systemProperty 'spring.classformat.ignore', 'true'
-    systemProperty 'spring.jpa.hibernate.ddl-auto', 'create-drop'
-    systemProperty 'spring.datasource.url', 'jdbc:h2:mem:testdb'
     //If you want to ensure that integration tests are run every time when you invoke
     //this task, uncomment the following line.
     //outputs.upToDateWhen { false }
@@ -74,9 +70,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-rest'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'jakarta.persistence:jakarta.persistence-api:3.2.0'
+    implementation 'org.flywaydb:flyway-core'
     compileOnly 'org.projectlombok:lombok:1.18.40'
-    compileOnly 'org.flywaydb:flyway-core'
     runtimeOnly 'org.postgresql:postgresql'
+    runtimeOnly 'com.h2database:h2'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
