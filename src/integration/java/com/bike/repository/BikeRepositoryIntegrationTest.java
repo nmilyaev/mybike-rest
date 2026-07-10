@@ -23,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @DataJpaTest
-@ContextConfiguration(classes = BorrowMyBikeApplication.class)
 @ExtendWith(MockitoExtension.class)
 public class BikeRepositoryIntegrationTest {
     @Autowired
