@@ -7,6 +7,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 
+import static jakarta.persistence.GenerationType.SEQUENCE;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -21,7 +23,12 @@ public class BikeHire {
     private final RoundingMode ROUNDING_MODE = RoundingMode.CEILING;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = SEQUENCE, generator = "bike_hire_seq")
+    @SequenceGenerator(
+            name = "bike_hire_seq",
+            sequenceName = "mybike.bike_hire_seq",
+            allocationSize = 1
+    )
     @Column(name = "hire_id", updatable = false, nullable = false)
     private Long id;
 

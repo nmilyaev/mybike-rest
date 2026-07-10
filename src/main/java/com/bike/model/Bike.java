@@ -16,7 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @EqualsAndHashCode(of = {"id"})
 @Entity(name = "Bike")
-@Table(name = "bike")
+@Table(name = "bike", schema = "mybike")
 public class Bike {
     @Transient
     private final int SCALE = 2;
@@ -38,7 +38,7 @@ public class Bike {
     @Column(name = "model", length = 100)
     private String model;
 
-    @Column(name = "value", precision = 8, scale = 2)
+    @Column(name = "worth", precision = 8, scale = 2)
     private BigDecimal value;
 
     @Column(name = "deposit", precision = 8, scale = 2)

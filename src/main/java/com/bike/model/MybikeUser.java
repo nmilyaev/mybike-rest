@@ -19,7 +19,7 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
 @NoArgsConstructor
 @EqualsAndHashCode(of = {"email"})
 @Entity(name = "MyBikeUser")
-@Table(name = "mybike_user")
+@Table(name = "mybike_user", schema = "mybike")
 @JsonTypeInfo(include = WRAPPER_OBJECT, use = NAME)
 @JsonInclude(NON_NULL)
 public class MybikeUser {

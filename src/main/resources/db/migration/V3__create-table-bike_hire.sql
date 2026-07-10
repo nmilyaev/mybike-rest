@@ -11,6 +11,10 @@ create table if not exists mybike.bike_hire (
        references bike,
     constraint bike_hire_borrower_id
        foreign key (borrower_id)
-       references mybike_user,
+       references mybike.mybike_user,
     primary key(hire_id)
-)
+);
+
+create sequence if not exists mybike.bike_hire_seq
+    start with 1
+    increment by 1;
