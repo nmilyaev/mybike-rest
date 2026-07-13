@@ -1,7 +1,6 @@
 package com.bike.web;
 
-import com.bike.model.Bike;
-import com.bike.model.MybikeUser;
+import com.bike.dto.BikeDto;
 import com.bike.service.BikeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,23 +23,18 @@ public class BikeController {
     }
 
     @GetMapping
-    public List<Bike> getBikesList() {
-        return bikeService.getList();
+    public List<BikeDto> getBikesList() {
+        return bikeService.getList().stream().map(BikeDto::fromEntity).toList();
     }
 
     @GetMapping(value = "/{bikeId}")
-    public Bike getBikes(@PathVariable UUID bikeId) {
-        return bikeService.getById(bikeId);
+    public BikeDto getBikes(@PathVariable UUID bikeId) {
+        return BikeDto.fromEntity(bikeService.getById(bikeId));
     }
 
     @PostMapping(value = "/createBike", consumes = "application/json", produces = "application/json")
-    public Bike createBike(@RequestBody Bike bike) {
-        return bikeService.addNewBike(bike);
-    }
-
-    @PostMapping
-    public Bike getBikesList(@RequestBody Bike bike) {
-        return bikeService.addNewBike(bike);
+    public void createBike(@RequestBody BikeDto bikeDto) {
+        bikeService.addNewBike(bikeDto.toEntity());
     }
 
     @DeleteMapping(value = "/{bikeId}")

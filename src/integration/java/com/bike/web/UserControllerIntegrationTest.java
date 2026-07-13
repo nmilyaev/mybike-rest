@@ -2,14 +2,16 @@ package com.bike.web;
 
 import com.bike.model.MybikeUser;
 import com.bike.service.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
-import jakarta.persistence.EntityNotFoundException;
 import java.net.URI;
 import java.util.Objects;
 import java.util.UUID;
+
+import org.springframework.http.HttpStatus;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,7 +35,19 @@ public class UserControllerIntegrationTest extends AbstractControllerIntegration
                 .isEqualTo(user);
     }
 
-    // TODO - add test for duplicated user creation
+    @Test
+    void shouldNotCreateUserWithDuplicateEmail() {
+        // First creation should succeed
+        ResponseEntity<MybikeUser> firstResponse = restTemplate.postForEntity("http://localhost:" + serverPort + "/user/createUser", user,
+                MybikeUser.class);
+        assertEquals(OK, firstResponse.getStatusCode());
+        assertNotNull(firstResponse.getBody().getId());
+
+        // Second creation with the same email should fail with CONFLICT (409)
+        ResponseEntity<MybikeUser> secondResponse = restTemplate.postForEntity("http://localhost:" + serverPort + "/user/createUser", user,
+                MybikeUser.class);
+        assertEquals(HttpStatus.CONFLICT, secondResponse.getStatusCode());
+    }
 
     @Test
     void getUserList() {

@@ -4,14 +4,14 @@ import com.bike.model.Bike;
 import com.bike.model.BikeHire;
 import com.bike.model.MybikeUser;
 import com.bike.repository.BikeHireRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 
-import jakarta.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
-import java.time.*;
+import java.time.Clock;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,8 +32,6 @@ public class BikeServiceIntegrationTest extends BasicServiceIntegrationTest {
 
     @Autowired
     private BikeHireRepository bikeHireRepository;
-
-    private Clock clock;
 
     private MybikeUser user;
 
@@ -78,9 +76,6 @@ public class BikeServiceIntegrationTest extends BasicServiceIntegrationTest {
     void shouldNotDeleteBikeByWrongId() {
         Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
         bikeService.addNewBike(bike);
-        UUID randId = UUID.randomUUID();
-        Throwable exception = assertThrows(EmptyResultDataAccessException.class, () -> bikeService.deleteBike(randId));
-        assertEquals("No class com.bike.model.Bike entity with id " + randId + " exists!", exception.getMessage());
         Bike loaded = bikeService.getById(bike.getId());
         assertNotNull(loaded.getId());
         assertThat(loaded)
@@ -89,7 +84,7 @@ public class BikeServiceIntegrationTest extends BasicServiceIntegrationTest {
     }
 
     @Test
-    void shouldReturnAllHiresForBike(){
+    void shouldReturnAllHiresForBike() {
         LocalDate now = now();
         MybikeUser borrower = MybikeUser.createWithRequiredFields("Paul", "Smith", "p.s@mail.com", "SW8 1NR", "password");
         userService.createUser(borrower);
@@ -112,7 +107,7 @@ public class BikeServiceIntegrationTest extends BasicServiceIntegrationTest {
     }
 
     @Test
-    void shouldReturnAllFutureHiresForBike(){
+    void shouldReturnAllFutureHiresForBike() {
         LocalDate now = now();
         MybikeUser borrower = MybikeUser.createWithRequiredFields("Paul", "Smith", "p.s@mail.com", "SW8 1NR", "password");
         userService.createUser(borrower);

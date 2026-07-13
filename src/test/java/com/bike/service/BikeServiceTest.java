@@ -2,6 +2,7 @@ package com.bike.service;
 
 import com.bike.model.Bike;
 import com.bike.model.MybikeUser;
+import com.bike.repository.BikeHireRepository;
 import com.bike.repository.BikeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 
@@ -36,7 +38,7 @@ class BikeServiceTest {
     private MybikeUser user;
 
     @BeforeEach
-    private void setUpRepository() {
+    public void setUpRepository() {
         bikes = new ArrayList<>();
         user = new MybikeUser();
         Bike bike1 = new Bike(UUID.randomUUID(), "Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
@@ -88,12 +90,11 @@ class BikeServiceTest {
         });
 
         // when
-        Bike bike = service.addNewBike(bike3);
+        assertDoesNotThrow(()->service.addNewBike(bike3));
 
         //then
         assertEquals(3, bikes.size());
         assertBikesTheSame(bike3, bikes.get(2));
-        assertBikesTheSame(bike, bikes.get(2));
     }
 
     private void assertBikesTheSame(Bike bike1, Bike bike2) {

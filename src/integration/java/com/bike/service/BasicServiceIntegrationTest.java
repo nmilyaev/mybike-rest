@@ -6,11 +6,16 @@ import com.bike.repository.BikeRepository;
 import com.bike.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 @Slf4j
 @SpringBootTest(classes = BorrowMyBikeApplication.class)
+@ActiveProfiles("integration")
+@ExtendWith(MockitoExtension.class)
 public class BasicServiceIntegrationTest {
 
     @Autowired

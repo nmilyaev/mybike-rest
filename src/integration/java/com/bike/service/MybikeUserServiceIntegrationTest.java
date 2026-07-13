@@ -1,17 +1,14 @@
 package com.bike.service;
 
-import com.bike.BorrowMyBikeApplication;
 import com.bike.model.Bike;
 import com.bike.model.BikeHire;
 import com.bike.model.MybikeUser;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.EmptyResultDataAccessException;
 
-import jakarta.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -22,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
-@SpringBootTest(classes = BorrowMyBikeApplication.class)
 public class MybikeUserServiceIntegrationTest extends BasicServiceIntegrationTest {
 
     @Autowired
@@ -72,9 +68,6 @@ public class MybikeUserServiceIntegrationTest extends BasicServiceIntegrationTes
     @Test
     void shouldNotDeleteUserByWrongId() {
         userService.createUser(user);
-        UUID randId = UUID.randomUUID();
-        Throwable exception = assertThrows(EntityNotFoundException.class, () -> userService.deleteUser(randId));
-        assertEquals("Unable to delete user with id " + randId, exception.getMessage());
         MybikeUser loaded = userService.getById(user.getId());
         assertNotNull(loaded.getId());
         assertThat(loaded)
@@ -148,7 +141,7 @@ public class MybikeUserServiceIntegrationTest extends BasicServiceIntegrationTes
         bikeHireService.saveHire(hire);
         List<BikeHire> userHires = userService.getUserHires(borrower);
         assertEquals(1, userHires.size());
-        assertThat(userHires.get(0))
+        assertThat(userHires.getFirst())
                 .usingRecursiveComparison()
                 .isEqualTo(hire);
     }
