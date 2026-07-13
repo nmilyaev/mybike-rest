@@ -1,5 +1,6 @@
 package com.bike.dto;
 
+import com.bike.model.BikeHire;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -46,7 +47,7 @@ public class BikeHireDto {
         return dailyRate.setScale(SCALE, ROUNDING_MODE);
     }
 
-    public static BikeHireDto fromEntity(com.bike.model.BikeHire bikeHire) {
+    public static BikeHireDto fromEntity(BikeHire bikeHire) {
         if (bikeHire == null) {
             return null;
         }
