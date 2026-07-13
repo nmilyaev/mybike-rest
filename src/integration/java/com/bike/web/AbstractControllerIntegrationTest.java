@@ -1,6 +1,7 @@
 package com.bike.web;
 
 import com.bike.BorrowMyBikeApplication;
+import com.bike.dto.MybikeUserDto;
 import com.bike.model.MybikeUser;
 import com.bike.repository.BikeRepository;
 import com.bike.repository.UserRepository;
@@ -35,10 +36,13 @@ public class AbstractControllerIntegrationTest {
     private BikeRepository bikeRepository;
 
     MybikeUser user;
+    MybikeUserDto userDto;
 
     @BeforeEach
     void setUp() {
-        user = MybikeUser.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password");
+        userDto = MybikeUserDto.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password");
+        user = userDto.toEntity();
+        userDto.setPassword(user.getPassword());
     }
 
     @AfterEach

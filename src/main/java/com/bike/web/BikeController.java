@@ -1,6 +1,9 @@
 package com.bike.web;
 
 import com.bike.dto.BikeDto;
+import com.bike.dto.MybikeUserDto;
+import com.bike.model.Bike;
+import com.bike.model.MybikeUser;
 import com.bike.service.BikeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

@@ -1,5 +1,6 @@
 package com.bike.service;
 
+import com.bike.dto.MybikeUserDto;
 import com.bike.model.Bike;
 import com.bike.model.BikeHire;
 import com.bike.model.MybikeUser;
@@ -10,10 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
-import java.time.Clock;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
 import static java.time.LocalDate.now;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,7 +36,7 @@ public class BikeServiceIntegrationTest extends BasicServiceIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        user = MybikeUser.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password");
+        user = MybikeUserDto.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password").toEntity();
         userService.createUser(user);
     }
 
@@ -86,7 +85,7 @@ public class BikeServiceIntegrationTest extends BasicServiceIntegrationTest {
     @Test
     void shouldReturnAllHiresForBike() {
         LocalDate now = now();
-        MybikeUser borrower = MybikeUser.createWithRequiredFields("Paul", "Smith", "p.s@mail.com", "SW8 1NR", "password");
+        MybikeUser borrower = MybikeUserDto.createWithRequiredFields("Paul", "Smith", "p.s@mail.com", "SW8 1NR", "password").toEntity();
         userService.createUser(borrower);
         Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
         bikeService.addNewBike(bike);
@@ -109,7 +108,7 @@ public class BikeServiceIntegrationTest extends BasicServiceIntegrationTest {
     @Test
     void shouldReturnAllFutureHiresForBike() {
         LocalDate now = now();
-        MybikeUser borrower = MybikeUser.createWithRequiredFields("Paul", "Smith", "p.s@mail.com", "SW8 1NR", "password");
+        MybikeUser borrower = MybikeUserDto.createWithRequiredFields("Paul", "Smith", "p.s@mail.com", "SW8 1NR", "password").toEntity();
         userService.createUser(borrower);
         Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
         bikeService.addNewBike(bike);

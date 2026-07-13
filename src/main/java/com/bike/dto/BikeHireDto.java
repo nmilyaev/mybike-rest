@@ -61,16 +61,4 @@ public class BikeHireDto {
                 .borrower(MybikeUserDto.fromEntity(bikeHire.getBorrower()))
                 .build();
     }
-
-    public com.bike.model.BikeHire toEntity() {
-        return com.bike.model.BikeHire.builder()
-                .id(this.id)
-                .deposit(this.deposit)
-                .dailyRate(this.dailyRate)
-                .startDate(this.startDate)
-                .endDate(this.endDate)
-                .bike(this.bikeDto == null ? null : this.bikeDto.toEntity())
-                .borrower(this.borrower == null ? null : this.borrower.toEntity())
-                .build();
-    }
 }

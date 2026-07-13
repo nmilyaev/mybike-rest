@@ -1,5 +1,6 @@
 package com.bike.model;
 
+import com.bike.dto.MybikeUserDto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -20,8 +21,6 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
 @EqualsAndHashCode(of = {"email"})
 @Entity(name = "MyBikeUser")
 @Table(name = "mybike_user", schema = "mybike")
-@JsonTypeInfo(include = WRAPPER_OBJECT, use = NAME)
-@JsonInclude(NON_NULL)
 public class MybikeUser {
     @Id
     @GeneratedValue(generator = "UUID")
@@ -54,18 +53,6 @@ public class MybikeUser {
         this.postcode = postcode;
         this.email = email;
         this.password = password;
-    }
-
-    public static MybikeUser createWithRequiredFields(String firstname, String surname, String email, String postcode, String password) {
-        return new MybikeUser(firstname, surname, email, postcode, password);
-    }
-
-    /**
-     * Just an indication for JSON that the top object's name is "MyBikeUser"
-     */
-    public static class Root {
-        @JsonProperty("MybikeUser")
-        public MybikeUser mybikeUser;
     }
 }
 

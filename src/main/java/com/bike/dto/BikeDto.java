@@ -37,7 +37,7 @@ public class BikeDto {
 
     private MybikeUserDto owner;
 
-    public static BikeDto fromEntity(com.bike.model.Bike bike) {
+    public static BikeDto fromEntity(Bike bike) {
         if (bike == null) {
             return null;
         }

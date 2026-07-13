@@ -1,5 +1,6 @@
 package com.bike.service;
 
+import com.bike.dto.MybikeUserDto;
 import com.bike.model.Bike;
 import com.bike.model.BikeHire;
 import com.bike.model.MybikeUser;
@@ -34,7 +35,7 @@ public class MybikeUserServiceIntegrationTest extends BasicServiceIntegrationTes
 
     @BeforeEach
     void setUp() {
-        user = MybikeUser.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password");
+        user = MybikeUserDto.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password").toEntity();
     }
 
     @Test
@@ -79,7 +80,7 @@ public class MybikeUserServiceIntegrationTest extends BasicServiceIntegrationTes
     void shouldNotCreateDuplicateUser() {
         MybikeUser saved = userService.createUser(user);
         assertNotNull(saved.getId());
-        user = MybikeUser.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password");
+        user = MybikeUserDto.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password").toEntity();
         assertNull(user.getId());
         Throwable exception = assertThrows(IllegalArgumentException.class, () -> userService.createUser(user));
         assertEquals("User with this email already exists: " + saved.getEmail(), exception.getMessage());
@@ -89,7 +90,7 @@ public class MybikeUserServiceIntegrationTest extends BasicServiceIntegrationTes
     void shouldSaveAndFetchAllUsers() {
         MybikeUser saved1 = userService.createUser(user);
         assertNotNull(saved1.getId());
-        user = MybikeUser.createWithRequiredFields("Nick", "Mills", "n.n@mail.com", "SW9 1NR", "password");
+        user = MybikeUserDto.createWithRequiredFields("Nick", "Mills", "n.n@mail.com", "SW9 1NR", "password").toEntity();
         user.setEmail("m.n@mail.com");
         assertNull(user.getId());
         MybikeUser saved2 = userService.createUser(user);
@@ -124,9 +125,9 @@ public class MybikeUserServiceIntegrationTest extends BasicServiceIntegrationTes
     @Test
     void shouldReturnAllHiresForUser(){
         LocalDate now = now();
-        MybikeUser owner = MybikeUser.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password");
+        MybikeUser owner = MybikeUserDto.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password").toEntity();
         userService.createUser(owner);
-        MybikeUser borrower = MybikeUser.createWithRequiredFields("Paul", "Smith", "p.s@mail.com", "SW8 1NR", "password");
+        MybikeUser borrower = MybikeUserDto.createWithRequiredFields("Paul", "Smith", "p.s@mail.com", "SW8 1NR", "password").toEntity();
         userService.createUser(borrower);
         Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), owner);
         bikeService.addNewBike(bike);

@@ -1,6 +1,7 @@
 package com.bike.repository;
 
 import com.bike.BorrowMyBikeApplication;
+import com.bike.dto.MybikeUserDto;
 import com.bike.model.Bike;
 import com.bike.model.BikeHire;
 import com.bike.model.MybikeUser;
@@ -33,7 +34,8 @@ class BikeHireRepositoryIntegrationTest {
 
     @Test
     void shouldFindByBikeAndStartDate() {
-        MybikeUser user = MybikeUser.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password");
+        MybikeUserDto userDto = MybikeUserDto.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password");
+        var user = userDto.toEntity();
         userRepository.save(user);
         Bike bike1 = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
         bikeRepository.save(bike1);

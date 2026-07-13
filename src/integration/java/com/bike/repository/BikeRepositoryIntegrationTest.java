@@ -1,9 +1,11 @@
 package com.bike.repository;
 
 import com.bike.BorrowMyBikeApplication;
+import com.bike.dto.MybikeUserDto;
 import com.bike.model.Bike;
 import com.bike.model.MybikeUser;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -30,10 +32,17 @@ public class BikeRepositoryIntegrationTest {
     @Autowired
     UserRepository userRepository;
 
+    private MybikeUser user;
+
+    @BeforeEach
+    public void setUp() {
+        MybikeUserDto user = MybikeUserDto.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password");
+        userRepository.save(user.toEntity());
+    }
+
     @Test
     public void shouldSaveBike() {
-        MybikeUser user = MybikeUser.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password");
-        userRepository.save(user);
+
         Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
         Bike saved = repository.save(bike);
         assertNotNull(saved.getId());
@@ -45,8 +54,6 @@ public class BikeRepositoryIntegrationTest {
 
     @Test
     void shouldSaveAndLoadBike() {
-        MybikeUser user = MybikeUser.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password");
-        userRepository.save(user);
         Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
         Bike saved = repository.save(bike);
         Bike loaded = repository.getReferenceById(saved.getId());
@@ -58,8 +65,6 @@ public class BikeRepositoryIntegrationTest {
 
     @Test
     void shouldDeleteBike() {
-        MybikeUser user = MybikeUser.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password");
-        userRepository.save(user);
         Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
         Bike saved = repository.save(bike);
         repository.delete(saved);

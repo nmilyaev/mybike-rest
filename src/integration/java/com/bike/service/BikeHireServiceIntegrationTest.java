@@ -1,5 +1,6 @@
 package com.bike.service;
 
+import com.bike.dto.MybikeUserDto;
 import com.bike.model.Bike;
 import com.bike.model.BikeHire;
 import com.bike.model.MybikeUser;
@@ -33,9 +34,9 @@ public class BikeHireServiceIntegrationTest extends BasicServiceIntegrationTest 
     @BeforeEach
     void setUp() {
         now = now();
-        MybikeUser owner = MybikeUser.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password");
+        MybikeUser owner = MybikeUserDto.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password").toEntity();
         owner = userService.createUser(owner);
-        borrower = MybikeUser.createWithRequiredFields("Paul", "Smith", "p.s@mail.com", "SW8 1NR", "password");
+        borrower = MybikeUserDto.createWithRequiredFields("Paul", "Smith", "p.s@mail.com", "SW8 1NR", "password").toEntity();
         userService.createUser(borrower);
         bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), owner);
         bikeService.addNewBike(bike);

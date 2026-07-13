@@ -1,5 +1,6 @@
 package com.bike.repository;
 
+import com.bike.dto.MybikeUserDto;
 import com.bike.model.MybikeUser;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,11 +26,12 @@ import static org.junit.jupiter.api.Assertions.*;
 public class MybikeUserRepositoryIntegrationTest {
     @Autowired
     private UserRepository repository;
+
     private MybikeUser user;
 
     @BeforeEach
     void setUp(){
-        user = MybikeUser.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password");
+        user = MybikeUserDto.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password").toEntity();
     }
 
     @Test
