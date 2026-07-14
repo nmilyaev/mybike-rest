@@ -3,3 +3,6 @@
     Tidy that up
 3. Currently, in controllers, we wrap everything in ResponseEntity. Check if that is required or could be simplified without affecting
     functionality
+4. Create GHAs for testing etc
+5. Introduce spotless plugin
+6.
