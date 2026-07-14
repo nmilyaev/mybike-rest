@@ -1,27 +1,21 @@
 package com.bike.model;
 
-import com.bike.dto.MybikeUserDto;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import jakarta.persistence.*;
 import java.util.UUID;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
-import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.WRAPPER_OBJECT;
-import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
-
 @Getter
 @Setter
 @ToString
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(of = {"email"})
 @Entity(name = "MyBikeUser")
 @Table(name = "mybike_user", schema = "mybike")
-public class MybikeUser {
+public class User {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(
@@ -47,7 +41,7 @@ public class MybikeUser {
     @Column(name = "password", nullable = false, length = 50)
     private String password;
 
-    public MybikeUser(String firstname, String surname, String email, String postcode, String password) {
+    public User(String firstname, String surname, String email, String postcode, String password) {
         this.firstname = firstname;
         this.surname = surname;
         this.postcode = postcode;

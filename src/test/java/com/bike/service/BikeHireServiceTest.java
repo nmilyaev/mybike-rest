@@ -2,7 +2,7 @@ package com.bike.service;
 
 import com.bike.model.Bike;
 import com.bike.model.BikeHire;
-import com.bike.model.MybikeUser;
+import com.bike.model.User;
 import com.bike.repository.BikeHireRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,17 +35,15 @@ public class BikeHireServiceTest {
 
     private List<BikeHire> bikeHires;
 
-    private MybikeUser owner;
-    private MybikeUser borrower;
+    private User borrower;
 
     @BeforeEach
     public void setUpRepository() {
         bikes = new ArrayList<>();
         bikeHires = new ArrayList<>();
-        owner = new MybikeUser();
-        borrower = new MybikeUser();
+        var owner = new User();
+        borrower = new User();
         Bike bike = new Bike(UUID.randomUUID(), "Raleigh", "Pioneer", BigDecimal.valueOf(80.00), owner);
-        Bike bike2 = new Bike(UUID.randomUUID(), "Dawes", "Galaxy", BigDecimal.valueOf(100.00), owner);
         bikes.add(bike);
     }
 
@@ -54,7 +52,7 @@ public class BikeHireServiceTest {
         // given
         LocalDate now = now();
         BikeHire hire = BikeHire.builder()
-                .bike(bikes.get(0))
+                .bike(bikes.getFirst())
                 .borrower(borrower)
                 .deposit(BigDecimal.valueOf(80.00))
                 .dailyRate(BigDecimal.valueOf(10.00))
@@ -70,7 +68,7 @@ public class BikeHireServiceTest {
         // given
         LocalDate now = now();
         BikeHire hire = BikeHire.builder()
-                .bike(bikes.get(0))
+                .bike(bikes.getFirst())
                 .borrower(borrower)
                 .deposit(BigDecimal.valueOf(80.00))
                 .dailyRate(BigDecimal.valueOf(10.00))
@@ -85,7 +83,7 @@ public class BikeHireServiceTest {
     void shouldAllowNewHireEndBeforeExistingStarts() {
         // given
         LocalDate now = now();
-        Bike bike = bikes.get(0);
+        Bike bike = bikes.getFirst();
         BikeHire existingHire = BikeHire.builder()
                 .bike(bike)
                 .borrower(borrower)
@@ -114,7 +112,7 @@ public class BikeHireServiceTest {
     void shouldNotAllowNewHireStartSameDayAsExistingEnds() {
         // given
         LocalDate now = now();
-        Bike bike = bikes.get(0);
+        Bike bike = bikes.getFirst();
         BikeHire existingHire = BikeHire.builder()
                 .bike(bike)
                 .borrower(borrower)
@@ -143,7 +141,7 @@ public class BikeHireServiceTest {
     void shouldAllowExistingHireEndBeforeNewStarts() {
         // given
         LocalDate now = now();
-        Bike bike = bikes.get(0);
+        Bike bike = bikes.getFirst();
         BikeHire existingHire = BikeHire.builder()
                 .bike(bike)
                 .borrower(borrower)
@@ -172,7 +170,7 @@ public class BikeHireServiceTest {
     void shouldNotAllowExistingHireStartSameDayAsNewEnds() {
         // given
         LocalDate now = now();
-        Bike bike = bikes.get(0);
+        Bike bike = bikes.getFirst();
         BikeHire existingHire = BikeHire.builder()
                 .bike(bike)
                 .borrower(borrower)
@@ -201,7 +199,7 @@ public class BikeHireServiceTest {
       void shouldCreateNewHireBetweenTwoExistingOnes() {
         // given
         LocalDate now = now();
-        Bike bike = bikes.get(0);
+        Bike bike = bikes.getFirst();
         BikeHire existingHire1 = BikeHire.builder()
                 .bike(bike)
                 .borrower(borrower)

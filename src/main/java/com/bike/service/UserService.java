@@ -2,7 +2,7 @@ package com.bike.service;
 
 import com.bike.model.Bike;
 import com.bike.model.BikeHire;
-import com.bike.model.MybikeUser;
+import com.bike.model.User;
 import com.bike.repository.BikeHireRepository;
 import com.bike.repository.BikeRepository;
 import com.bike.repository.UserRepository;
@@ -33,17 +33,17 @@ public class UserService {
         this.bikeHireRepository = bikeHireRepository;
     }
 
-    public List<MybikeUser> getAll() {
+    public List<User> getAll() {
         return userRepository.findAll();
     }
 
-    public MybikeUser getById(UUID id) throws EntityNotFoundException {
+    public User getById(UUID id) throws EntityNotFoundException {
         return userRepository.findById(id).orElseThrow(() ->
                 new EntityNotFoundException("Unable to find com.bike.model.MybikeUser with id " + id));
     }
 
-    public MybikeUser createUser(MybikeUser user) {
-        MybikeUser userWithSameEmail = userRepository.findByEmail(user.getEmail());
+    public User createUser(User user) {
+        User userWithSameEmail = userRepository.findByEmail(user.getEmail());
         if (userWithSameEmail != null) {
             throw new IllegalArgumentException("User with this email already exists: " + userWithSameEmail.getEmail());
         }
@@ -59,11 +59,11 @@ public class UserService {
         }
     }
 
-    public List<Bike> getUserBikes(MybikeUser user) {
+    public List<Bike> getUserBikes(User user) {
         return bikeRepository.findAllByOwner(user);
     }
 
-    public List<BikeHire> getUserHires(MybikeUser borrower) {
+    public List<BikeHire> getUserHires(User borrower) {
         return bikeHireRepository.findAllByBorrower(borrower);
     }
 }

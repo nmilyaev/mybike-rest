@@ -1,8 +1,11 @@
 package com.bike.web;
 
+import com.bike.dto.BikeDto;
+import com.bike.dto.UserDto;
 import com.bike.model.Bike;
 import com.bike.service.BikeService;
 import com.bike.service.UserService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,8 +13,9 @@ import org.springframework.http.ResponseEntity;
 import jakarta.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.net.URI;
-import java.util.Objects;
 
+import static com.bike.util.IntegrationTestUtil.aMybikeUser;
+import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpStatus.OK;
@@ -24,15 +28,23 @@ class BikeControllerIntegrationTest extends AbstractControllerIntegrationTest {
     @Autowired
     private UserService userService;
 
+    private Bike bike;
+
+    @BeforeEach
+    void setUp() {
+            user = aMybikeUser();
+            userDto = UserDto.fromEntity(user);
+        userService.createUser(user);
+        bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
+    }
+
     @Test
     void shouldCreateBike() {
-        userService.createUser(user);
-        Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
-        ResponseEntity<Bike> response = restTemplate.postForEntity("http://localhost:" + serverPort + "/bike/createBike", bike,
-                Bike.class);
+        ResponseEntity<BikeDto> response = restTemplate.postForEntity("http://localhost:" + serverPort + "/bike/createBike", bike,
+                BikeDto.class);
         assertEquals(OK, response.getStatusCode());
-        Bike restBike = response.getBody();
-        bike.setId(Objects.requireNonNull(restBike).getId());
+        BikeDto restBike = response.getBody();
+        bike.setId(requireNonNull(restBike).getId());
         assertNotNull(restBike.getId());
         assertThat(restBike)
                 .usingRecursiveComparison()
@@ -41,11 +53,10 @@ class BikeControllerIntegrationTest extends AbstractControllerIntegrationTest {
 
     @Test
     void shouldGetBike() {
-        userService.createUser(user);
-        Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
         service.addNewBike(bike);
-        Bike restBike = restTemplate.getForObject("http://localhost:" + serverPort + "/bike/" + bike.getId(),
-                Bike.class);
+        ResponseEntity<BikeDto> response = restTemplate.getForEntity("http://localhost:" + serverPort + "/bike/" + bike.getId(),
+                BikeDto.class);
+        BikeDto restBike = response.getBody();
         assertThat(restBike)
                 .usingRecursiveComparison()
                 .isEqualTo(bike);
@@ -53,12 +64,11 @@ class BikeControllerIntegrationTest extends AbstractControllerIntegrationTest {
 
     @Test
     void getBikeList() {
-        userService.createUser(user);
-        Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
         service.addNewBike(bike);
-        Bike[] restBikes = restTemplate.getForObject("http://localhost:" + serverPort + "/bike/", Bike[].class);
-        assertEquals(1, restBikes.length);
-        Bike restBike = restBikes[0];
+        ResponseEntity<BikeDto[]> response = restTemplate.getForEntity("http://localhost:" + serverPort + "/bike", BikeDto[].class);
+        BikeDto[] restBikes = response.getBody();
+        assertEquals(1, requireNonNull(restBikes).length);
+        BikeDto restBike = restBikes[0];
         assertThat(restBike)
                 .usingRecursiveComparison()
                 .isEqualTo(bike);
@@ -66,8 +76,6 @@ class BikeControllerIntegrationTest extends AbstractControllerIntegrationTest {
 
     @Test
     void deleteBike() {
-        userService.createUser(user);
-        Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
         service.addNewBike(bike);
         restTemplate.delete(URI.create("http://localhost:" + serverPort + "/bike/" + bike.getId()));
         Throwable exception = assertThrows(EntityNotFoundException.class, () -> service.getById(bike.getId()));

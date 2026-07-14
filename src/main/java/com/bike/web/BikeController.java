@@ -1,11 +1,8 @@
 package com.bike.web;
 
 import com.bike.dto.BikeDto;
-import com.bike.dto.MybikeUserDto;
-import com.bike.model.Bike;
-import com.bike.model.MybikeUser;
 import com.bike.service.BikeService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,29 +12,25 @@ import java.util.UUID;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/bike")
 public class BikeController {
     private final BikeService bikeService;
 
-    @Autowired
-    public BikeController(BikeService bikeService) {
-        this.bikeService = bikeService;
-    }
-
     @GetMapping
-    public List<BikeDto> getBikesList() {
-        return bikeService.getList().stream().map(BikeDto::fromEntity).toList();
+    public ResponseEntity<List<BikeDto>> getBikesList() {
+        return ResponseEntity.ok(bikeService.getList().stream().map(BikeDto::fromEntity).toList());
     }
 
     @GetMapping(value = "/{bikeId}")
-    public BikeDto getBikes(@PathVariable UUID bikeId) {
-        return BikeDto.fromEntity(bikeService.getById(bikeId));
+    public ResponseEntity<BikeDto> getBikes(@PathVariable UUID bikeId) {
+        return ResponseEntity.ok(BikeDto.fromEntity(bikeService.getById(bikeId)));
     }
 
     @PostMapping(value = "/createBike", consumes = "application/json", produces = "application/json")
-    public void createBike(@RequestBody BikeDto bikeDto) {
-        bikeService.addNewBike(bikeDto.toEntity());
+    public ResponseEntity<BikeDto> createBike(@RequestBody BikeDto bikeDto) {
+        return ResponseEntity.ok(BikeDto.fromEntity(bikeService.addNewBike(bikeDto.toEntity())));
     }
 
     @DeleteMapping(value = "/{bikeId}")

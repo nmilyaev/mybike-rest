@@ -37,7 +37,7 @@ public class BikeHireDto {
 
     private BikeDto bikeDto;
 
-    private MybikeUserDto borrower;
+    private UserDto borrower;
 
     public BigDecimal getDeposit() {
         return deposit.setScale(SCALE, ROUNDING_MODE);
@@ -59,7 +59,7 @@ public class BikeHireDto {
                 .startDate(bikeHire.getStartDate())
                 .endDate(bikeHire.getEndDate())
                 .bikeDto(BikeDto.fromEntity(bikeHire.getBike()))
-                .borrower(MybikeUserDto.fromEntity(bikeHire.getBorrower()))
+                .borrower(UserDto.fromEntity(bikeHire.getBorrower()))
                 .build();
     }
 }

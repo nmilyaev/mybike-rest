@@ -1,9 +1,7 @@
 package com.bike.repository;
 
-import com.bike.BorrowMyBikeApplication;
-import com.bike.dto.MybikeUserDto;
 import com.bike.model.Bike;
-import com.bike.model.MybikeUser;
+import com.bike.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,10 +10,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.math.BigDecimal;
 
+import static com.bike.util.IntegrationTestUtil.aMybikeUser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,12 +30,12 @@ public class BikeRepositoryIntegrationTest {
     @Autowired
     UserRepository userRepository;
 
-    private MybikeUser user;
+    private User user;
 
     @BeforeEach
     public void setUp() {
-        MybikeUserDto user = MybikeUserDto.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password");
-        userRepository.save(user.toEntity());
+        user = aMybikeUser();
+        userRepository.save(user);
     }
 
     @Test

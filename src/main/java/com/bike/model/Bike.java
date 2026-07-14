@@ -48,14 +48,14 @@ public class Bike {
 
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false, foreignKey = @ForeignKey(name = "bike_owner_id"))
-    private MybikeUser owner;
+    private User owner;
 
-    public Bike(UUID id, String make, String model, BigDecimal value, MybikeUser user) {
+    public Bike(UUID id, String make, String model, BigDecimal value, User user) {
         this(make, model, value, user);
         this.id = id;
     }
 
-    public Bike(String make, String model, BigDecimal value, MybikeUser user) {
+    public Bike(String make, String model, BigDecimal value, User user) {
         this.make = make;
         this.model = model;
         this.value = value;

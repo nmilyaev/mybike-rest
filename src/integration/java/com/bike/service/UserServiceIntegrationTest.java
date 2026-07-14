@@ -1,9 +1,8 @@
 package com.bike.service;
 
-import com.bike.dto.MybikeUserDto;
 import com.bike.model.Bike;
 import com.bike.model.BikeHire;
-import com.bike.model.MybikeUser;
+import com.bike.model.User;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,14 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
+import static com.bike.util.IntegrationTestUtil.aMybikeUser;
 import static java.time.LocalDate.now;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
-public class MybikeUserServiceIntegrationTest extends BasicServiceIntegrationTest {
+public class UserServiceIntegrationTest extends BasicServiceIntegrationTest {
 
     @Autowired
     private UserService userService;
@@ -31,16 +30,16 @@ public class MybikeUserServiceIntegrationTest extends BasicServiceIntegrationTes
     @Autowired
     private BikeHireService bikeHireService;
 
-    private MybikeUser user;
+    private User user;
 
     @BeforeEach
     void setUp() {
-        user = MybikeUserDto.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password").toEntity();
+        user = aMybikeUser();
     }
 
     @Test
     void shouldSaveUser() {
-        MybikeUser saved = userService.createUser(user);
+        var saved = userService.createUser(user);
         assertNotNull(saved.getId());
         assertThat(saved)
                 .usingRecursiveComparison()
@@ -50,8 +49,8 @@ public class MybikeUserServiceIntegrationTest extends BasicServiceIntegrationTes
 
     @Test
     void shouldSaveAndLoadUser() {
-        MybikeUser saved = userService.createUser(user);
-        MybikeUser loaded = userService.getById(saved.getId());
+        var saved = userService.createUser(user);
+        var loaded = userService.getById(saved.getId());
         assertNotNull(saved.getId());
         assertThat(loaded)
                 .usingRecursiveComparison()
@@ -69,7 +68,7 @@ public class MybikeUserServiceIntegrationTest extends BasicServiceIntegrationTes
     @Test
     void shouldNotDeleteUserByWrongId() {
         userService.createUser(user);
-        MybikeUser loaded = userService.getById(user.getId());
+        var loaded = userService.getById(user.getId());
         assertNotNull(loaded.getId());
         assertThat(loaded)
                 .usingRecursiveComparison()
@@ -78,9 +77,9 @@ public class MybikeUserServiceIntegrationTest extends BasicServiceIntegrationTes
 
     @Test
     void shouldNotCreateDuplicateUser() {
-        MybikeUser saved = userService.createUser(user);
+        var saved = userService.createUser(user);
         assertNotNull(saved.getId());
-        user = MybikeUserDto.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password").toEntity();
+        user = aMybikeUser();
         assertNull(user.getId());
         Throwable exception = assertThrows(IllegalArgumentException.class, () -> userService.createUser(user));
         assertEquals("User with this email already exists: " + saved.getEmail(), exception.getMessage());
@@ -88,14 +87,14 @@ public class MybikeUserServiceIntegrationTest extends BasicServiceIntegrationTes
 
     @Test
     void shouldSaveAndFetchAllUsers() {
-        MybikeUser saved1 = userService.createUser(user);
+        var saved1 = userService.createUser(user);
         assertNotNull(saved1.getId());
-        user = MybikeUserDto.createWithRequiredFields("Nick", "Mills", "n.n@mail.com", "SW9 1NR", "password").toEntity();
+        user = aMybikeUser("Nick", "Mills", "n.n@mail.com", "SW9 1NR", "password");
         user.setEmail("m.n@mail.com");
         assertNull(user.getId());
-        MybikeUser saved2 = userService.createUser(user);
+        User saved2 = userService.createUser(user);
         assertNotNull(saved2.getId());
-        List<MybikeUser> allUsers = userService.getAll();
+        List<User> allUsers = userService.getAll();
         assertEquals(2, allUsers.size());
         assertThat(allUsers.get(0))
                 .usingRecursiveComparison()
@@ -107,9 +106,9 @@ public class MybikeUserServiceIntegrationTest extends BasicServiceIntegrationTes
 
     @Test
     void shouldReturnAllBikesOwnerByUser() {
-        MybikeUser saved = userService.createUser(user);
-        Bike bike1 = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
-        Bike bike2 = new Bike("Dawes", "Galaxy", BigDecimal.valueOf(120.00), user);
+        User saved = userService.createUser(user);
+        var bike1 = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
+        var bike2 = new Bike("Dawes", "Galaxy", BigDecimal.valueOf(120.00), user);
         bikeService.addNewBike(bike1);
         bikeService.addNewBike(bike2);
         List<Bike> userBikes = userService.getUserBikes(saved);
@@ -125,11 +124,11 @@ public class MybikeUserServiceIntegrationTest extends BasicServiceIntegrationTes
     @Test
     void shouldReturnAllHiresForUser(){
         LocalDate now = now();
-        MybikeUser owner = MybikeUserDto.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password").toEntity();
+        var owner = aMybikeUser();
         userService.createUser(owner);
-        MybikeUser borrower = MybikeUserDto.createWithRequiredFields("Paul", "Smith", "p.s@mail.com", "SW8 1NR", "password").toEntity();
+        var borrower = aMybikeUser("Paul", "Smith", "p.s@mail.com", "SW8 1NR", "password");
         userService.createUser(borrower);
-        Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), owner);
+        var bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), owner);
         bikeService.addNewBike(bike);
         BikeHire hire = BikeHire.builder()
                 .bike(bike)

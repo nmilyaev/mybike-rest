@@ -1,8 +1,7 @@
 package com.bike.service;
 
 import com.bike.model.Bike;
-import com.bike.model.MybikeUser;
-import com.bike.repository.BikeHireRepository;
+import com.bike.model.User;
 import com.bike.repository.BikeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,12 +34,12 @@ class BikeServiceTest {
 
     private List<Bike> bikes;
 
-    private MybikeUser user;
+    private User user;
 
     @BeforeEach
     public void setUpRepository() {
         bikes = new ArrayList<>();
-        user = new MybikeUser();
+        user = new User();
         Bike bike1 = new Bike(UUID.randomUUID(), "Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
         Bike bike2 = new Bike(UUID.randomUUID(), "Dawes", "Galaxy", BigDecimal.valueOf(100.00), user);
         bikes.add(bike1);
@@ -66,8 +65,8 @@ class BikeServiceTest {
     @Test
     void shouldGetBikeById() {
         // given
-        UUID bikeId = bikes.get(0).getId();
-        given(bikeRepository.findById(bikeId)).willReturn(Optional.of(bikes.get(0)));
+        UUID bikeId = bikes.getFirst().getId();
+        given(bikeRepository.findById(bikeId)).willReturn(Optional.of(bikes.getFirst()));
 
         // when
         Bike bike = service.getById(bikeId);

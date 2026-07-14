@@ -35,7 +35,7 @@ public class BikeDto {
 
     private BigDecimal dailyRate;
 
-    private MybikeUserDto owner;
+    private UserDto owner;
 
     public static BikeDto fromEntity(Bike bike) {
         if (bike == null) {
@@ -49,7 +49,7 @@ public class BikeDto {
                 .value(bike.getValue())
                 .deposit(bike.getDeposit())
                 .dailyRate(bike.getDailyRate())
-                .owner(MybikeUserDto.fromEntity(bike.getOwner()))
+                .owner(UserDto.fromEntity(bike.getOwner()))
                 .build();
     }
 

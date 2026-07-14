@@ -1,9 +1,8 @@
 package com.bike.service;
 
-import com.bike.dto.MybikeUserDto;
 import com.bike.model.Bike;
 import com.bike.model.BikeHire;
-import com.bike.model.MybikeUser;
+import com.bike.model.User;
 import com.bike.repository.BikeHireRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +13,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import static com.bike.util.IntegrationTestUtil.aMybikeUser;
 import static java.time.LocalDate.now;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,11 +32,11 @@ public class BikeServiceIntegrationTest extends BasicServiceIntegrationTest {
     @Autowired
     private BikeHireRepository bikeHireRepository;
 
-    private MybikeUser user;
+    private User user;
 
     @BeforeEach
     void setUp() {
-        user = MybikeUserDto.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password").toEntity();
+        user = aMybikeUser();
         userService.createUser(user);
     }
 
@@ -85,7 +85,7 @@ public class BikeServiceIntegrationTest extends BasicServiceIntegrationTest {
     @Test
     void shouldReturnAllHiresForBike() {
         LocalDate now = now();
-        MybikeUser borrower = MybikeUserDto.createWithRequiredFields("Paul", "Smith", "p.s@mail.com", "SW8 1NR", "password").toEntity();
+        User borrower = aMybikeUser("Paul", "Smith", "p.s@mail.com", "SW8 1NR", "password");
         userService.createUser(borrower);
         Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
         bikeService.addNewBike(bike);
@@ -108,7 +108,7 @@ public class BikeServiceIntegrationTest extends BasicServiceIntegrationTest {
     @Test
     void shouldReturnAllFutureHiresForBike() {
         LocalDate now = now();
-        MybikeUser borrower = MybikeUserDto.createWithRequiredFields("Paul", "Smith", "p.s@mail.com", "SW8 1NR", "password").toEntity();
+        User borrower = aMybikeUser("Paul", "Smith", "p.s@mail.com", "SW8 1NR", "password");
         userService.createUser(borrower);
         Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
         bikeService.addNewBike(bike);

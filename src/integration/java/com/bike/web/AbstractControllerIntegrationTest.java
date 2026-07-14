@@ -1,8 +1,8 @@
 package com.bike.web;
 
 import com.bike.BorrowMyBikeApplication;
-import com.bike.dto.MybikeUserDto;
-import com.bike.model.MybikeUser;
+import com.bike.dto.UserDto;
+import com.bike.model.User;
 import com.bike.repository.BikeRepository;
 import com.bike.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
+import static com.bike.util.IntegrationTestUtil.aMybikeUser;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.DEFINED_PORT;
 
 @SpringBootTest(classes = BorrowMyBikeApplication.class,
@@ -35,14 +36,13 @@ public class AbstractControllerIntegrationTest {
     @Autowired
     private BikeRepository bikeRepository;
 
-    MybikeUser user;
-    MybikeUserDto userDto;
+    User user;
+    UserDto userDto;
 
     @BeforeEach
     void setUp() {
-        userDto = MybikeUserDto.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password");
-        user = userDto.toEntity();
-        userDto.setPassword(user.getPassword());
+        user = aMybikeUser();
+        userDto = UserDto.fromEntity(user);
     }
 
     @AfterEach

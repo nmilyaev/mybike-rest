@@ -52,7 +52,7 @@ public class BikeHire {
 
     @OneToOne
     @JoinColumn(name="borrower_id", nullable=false, foreignKey=@ForeignKey(name="bike_hire_borrower_id"))
-    private MybikeUser borrower;
+    private User borrower;
 
     public BigDecimal getDeposit() {
         return deposit.setScale(SCALE, ROUNDING_MODE);
@@ -62,7 +62,7 @@ public class BikeHire {
         return dailyRate.setScale(SCALE, ROUNDING_MODE);
     }
 
-    public BikeHire(Long id, BigDecimal deposit, BigDecimal dailyRate, LocalDate startDate, LocalDate endDate, Bike bike, MybikeUser borrower) {
+    public BikeHire(Long id, BigDecimal deposit, BigDecimal dailyRate, LocalDate startDate, LocalDate endDate, Bike bike, User borrower) {
         this.id = id;
         this.deposit = deposit;
         this.dailyRate = dailyRate;

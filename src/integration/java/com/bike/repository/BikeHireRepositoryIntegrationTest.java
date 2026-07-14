@@ -1,22 +1,18 @@
 package com.bike.repository;
 
-import com.bike.BorrowMyBikeApplication;
-import com.bike.dto.MybikeUserDto;
 import com.bike.model.Bike;
 import com.bike.model.BikeHire;
-import com.bike.model.MybikeUser;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import static com.bike.util.IntegrationTestUtil.aMybikeUser;
 import static java.time.LocalDate.now;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,8 +30,7 @@ class BikeHireRepositoryIntegrationTest {
 
     @Test
     void shouldFindByBikeAndStartDate() {
-        MybikeUserDto userDto = MybikeUserDto.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password");
-        var user = userDto.toEntity();
+        var user = aMybikeUser();
         userRepository.save(user);
         Bike bike1 = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
         bikeRepository.save(bike1);

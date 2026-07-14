@@ -1,7 +1,6 @@
 package com.bike.repository;
 
-import com.bike.dto.MybikeUserDto;
-import com.bike.model.MybikeUser;
+import com.bike.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,6 +12,7 @@ import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.bike.util.IntegrationTestUtil.aMybikeUser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,20 +23,20 @@ import static org.junit.jupiter.api.Assertions.*;
 @Slf4j
 @DataJpaTest
 @ExtendWith(MockitoExtension.class)
-public class MybikeUserRepositoryIntegrationTest {
+public class UserRepositoryIntegrationTest {
     @Autowired
     private UserRepository repository;
 
-    private MybikeUser user;
+    private User user;
 
     @BeforeEach
     void setUp(){
-        user = MybikeUserDto.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password").toEntity();
+        user = aMybikeUser();
     }
 
     @Test
     void shouldSaveUser() {
-        MybikeUser saved = repository.save(user);
+        User saved = repository.save(user);
         assertNotNull(saved.getId());
         assertThat(saved)
                 .usingRecursiveComparison()
@@ -46,8 +46,8 @@ public class MybikeUserRepositoryIntegrationTest {
     @Test
     @Transactional
     void shouldSaveAndLoadUser() {
-        MybikeUser saved = repository.save(user);
-        MybikeUser loaded = repository.getReferenceById(saved.getId());
+        User saved = repository.save(user);
+        User loaded = repository.getReferenceById(saved.getId());
         assertNotNull(saved.getId());
         assertThat(loaded)
                 .usingRecursiveComparison()
@@ -57,9 +57,9 @@ public class MybikeUserRepositoryIntegrationTest {
     @Test
     @Transactional
     void shouldDeleteUser() {
-        MybikeUser saved = repository.save(user);
+        User saved = repository.save(user);
         repository.delete(saved);
         Throwable exception = assertThrows(JpaObjectRetrievalFailureException.class, () -> repository.getReferenceById(saved.getId()));
-        assertEquals("Unable to find com.bike.model.MybikeUser with id " + saved.getId(), exception.getCause().getMessage());
+        assertEquals("Unable to find com.bike.model.User with id " + saved.getId(), exception.getCause().getMessage());
     }
 }
