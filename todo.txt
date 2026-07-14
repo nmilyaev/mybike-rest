@@ -1,3 +1,2 @@
-4. Create GHAs for testing etc
 6. Branch protection for master?
 7. Create mappers for Dto classses?
