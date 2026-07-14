@@ -45,6 +45,9 @@ public class BikeService {
   }
 
   public void deleteBike(UUID bikeId) {
+    if (!bikeRepository.existsById(bikeId)) {
+      throw new EntityNotFoundException("Unable to find Bike with id " + bikeId);
+    }
     bikeRepository.deleteById(bikeId);
   }
 

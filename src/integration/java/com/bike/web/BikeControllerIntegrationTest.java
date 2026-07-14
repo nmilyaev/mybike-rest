@@ -4,7 +4,8 @@ import static com.bike.util.IntegrationTestUtil.aMybikeUser;
 import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpMethod.DELETE;
+import static org.springframework.http.HttpStatus.*;
 
 import com.bike.dto.BikeDto;
 import com.bike.dto.UserDto;
@@ -14,6 +15,7 @@ import com.bike.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.net.URI;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +42,7 @@ class BikeControllerIntegrationTest extends AbstractControllerIntegrationTest {
     ResponseEntity<BikeDto> response =
         restTemplate.postForEntity(
             "http://localhost:" + serverPort + "/bike/createBike", bike, BikeDto.class);
-    assertEquals(OK, response.getStatusCode());
+    assertEquals(CREATED, response.getStatusCode());
     BikeDto restBike = response.getBody();
     bike.setId(requireNonNull(restBike).getId());
     assertNotNull(restBike.getId());
@@ -85,5 +87,17 @@ class BikeControllerIntegrationTest extends AbstractControllerIntegrationTest {
         assertThrows(EntityNotFoundException.class, () -> service.getById(bike.getId()));
     assertEquals(
         "Unable to find com.bike.model.Bike with id " + bike.getId(), exception.getMessage());
+  }
+
+  @Test
+  void shouldNotDeleteNonexistentBike() {
+    ResponseEntity<Void> response =
+        restTemplate.exchange(
+            "http://localhost:" + serverPort + "/bike/" + UUID.randomUUID(),
+            DELETE,
+            null,
+            Void.class);
+
+    assertEquals(NOT_FOUND, response.getStatusCode());
   }
 }
