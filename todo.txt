@@ -1,7 +1,3 @@
-2. BikeController: "return ResponseEntity.ok(BikeDto.fromEntity(bikeService.addNewBike(bikeDto.toEntity())));" looks a bit shit.
-    Tidy that up
-3. Currently, in controllers, we wrap everything in ResponseEntity. Check if that is required or could be simplified without affecting
-    functionality
 4. Create GHAs for testing etc
 6. Branch protection for master?
 7. Create mappers for Dto classses?

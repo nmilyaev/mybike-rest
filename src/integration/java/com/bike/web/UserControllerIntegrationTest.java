@@ -4,8 +4,7 @@ import static com.bike.util.IntegrationTestUtil.createUserRequest;
 import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.*;
 
 import com.bike.dto.UserDto;
 import com.bike.model.User;
@@ -30,7 +29,7 @@ public class UserControllerIntegrationTest extends AbstractControllerIntegration
     ResponseEntity<UserDto> response =
         restTemplate.postForEntity(
             "http://localhost:" + serverPort + "/user/create", request, UserDto.class);
-    assertEquals(OK, response.getStatusCode());
+    assertEquals(CREATED, response.getStatusCode());
     UserDto restUser = requireNonNull(response.getBody());
     user.setId(requireNonNull(restUser).getId());
     assertNotNull(restUser.getId());
@@ -44,7 +43,7 @@ public class UserControllerIntegrationTest extends AbstractControllerIntegration
     ResponseEntity<UserDto> firstResponse =
         restTemplate.postForEntity(
             "http://localhost:" + serverPort + "/user/create", request, UserDto.class);
-    assertEquals(OK, firstResponse.getStatusCode());
+    assertEquals(CREATED, firstResponse.getStatusCode());
     assertNotNull(firstResponse.getBody().getId());
 
     // Second creation with the same email should fail with CONFLICT (409)
@@ -57,21 +56,20 @@ public class UserControllerIntegrationTest extends AbstractControllerIntegration
   @Test
   void getUserList() {
     service.createUser(user);
-    ResponseEntity<UserDto[]> response =
-        restTemplate.getForEntity("http://localhost:" + serverPort + "/user", UserDto[].class);
-    var restUsers = response.getBody();
-    assertEquals(1, requireNonNull(restUsers).length);
-    UserDto restUser = restUsers[0];
+    UserDto[] response =
+        restTemplate.getForObject("http://localhost:" + serverPort + "/user", UserDto[].class);
+    assertEquals(1, requireNonNull(response).length);
+    UserDto restUser = response[0];
     assertThat(restUser).usingRecursiveComparison().ignoringFields("password").isEqualTo(user);
   }
 
   @Test
   void shouldGetUser() {
     service.createUser(user);
-    User restUser =
+    UserDto restUser =
         restTemplate.getForObject(
-            "http://localhost:" + serverPort + "/user/" + user.getId(), User.class);
-    assertThat(restUser).usingRecursiveComparison().isEqualTo(user);
+            "http://localhost:" + serverPort + "/user/" + user.getId(), UserDto.class);
+    assertThat(restUser).usingRecursiveComparison().ignoringFields("password").isEqualTo(user);
   }
 
   @Test
