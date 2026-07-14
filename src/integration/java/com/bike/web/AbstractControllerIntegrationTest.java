@@ -1,5 +1,8 @@
 package com.bike.web;
 
+import static com.bike.util.IntegrationTestUtil.aMybikeUser;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.DEFINED_PORT;
+
 import com.bike.BorrowMyBikeApplication;
 import com.bike.dto.UserDto;
 import com.bike.model.User;
@@ -15,39 +18,32 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
-import static com.bike.util.IntegrationTestUtil.aMybikeUser;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.DEFINED_PORT;
-
-@SpringBootTest(classes = BorrowMyBikeApplication.class,
-        webEnvironment = DEFINED_PORT)
+@SpringBootTest(classes = BorrowMyBikeApplication.class, webEnvironment = DEFINED_PORT)
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("integration")
 public class AbstractControllerIntegrationTest {
 
-    @Value("${server.port}")
-    int serverPort;
+  @Value("${server.port}")
+  int serverPort;
 
-    @Autowired
-    TestRestTemplate restTemplate;
+  @Autowired TestRestTemplate restTemplate;
 
-    @Autowired
-    private UserRepository userRepository;
+  @Autowired private UserRepository userRepository;
 
-    @Autowired
-    private BikeRepository bikeRepository;
+  @Autowired private BikeRepository bikeRepository;
 
-    User user;
-    UserDto userDto;
+  User user;
+  UserDto userDto;
 
-    @BeforeEach
-    void setUp() {
-        user = aMybikeUser();
-        userDto = UserDto.fromEntity(user);
-    }
+  @BeforeEach
+  void setUp() {
+    user = aMybikeUser();
+    userDto = UserDto.fromEntity(user);
+  }
 
-    @AfterEach
-    void cleanUp() {
-        bikeRepository.deleteAll();
-        userRepository.deleteAll();
-    }
+  @AfterEach
+  void cleanUp() {
+    bikeRepository.deleteAll();
+    userRepository.deleteAll();
+  }
 }
