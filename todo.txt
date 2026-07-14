@@ -1,0 +1,3 @@
+1. Make sure we're not exposing user password in UserDto
+2. BikeController: "return ResponseEntity.ok(BikeDto.fromEntity(bikeService.addNewBike(bikeDto.toEntity())));" looks a bit shit.
+    Tidy that up
