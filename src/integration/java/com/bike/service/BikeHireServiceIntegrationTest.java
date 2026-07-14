@@ -1,25 +1,21 @@
 package com.bike.service;
 
-import com.bike.BorrowMyBikeApplication;
 import com.bike.model.Bike;
 import com.bike.model.BikeHire;
-import com.bike.model.MybikeUser;
-import lombok.extern.slf4j.Slf4j;
+import com.bike.model.User;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
-import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import static com.bike.util.IntegrationTestUtil.aMybikeUser;
 import static java.time.LocalDate.now;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-@Slf4j
-@SpringBootTest(classes = BorrowMyBikeApplication.class)
 public class BikeHireServiceIntegrationTest extends BasicServiceIntegrationTest {
 
     @Autowired
@@ -31,17 +27,16 @@ public class BikeHireServiceIntegrationTest extends BasicServiceIntegrationTest 
     @Autowired
     private UserService userService;
 
-    private MybikeUser owner;
-    private MybikeUser borrower;
+    private User borrower;
     private Bike bike;
     private LocalDate now;
 
     @BeforeEach
     void setUp() {
         now = now();
-        owner = MybikeUser.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password");
+        var owner = aMybikeUser();
         owner = userService.createUser(owner);
-        borrower = MybikeUser.createWithRequiredFields("Paul", "Smith", "p.s@mail.com", "SW8 1NR", "password");
+        borrower = aMybikeUser("Paul", "Smith", "p.s@mail.com", "SW8 1NR", "password");
         userService.createUser(borrower);
         bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), owner);
         bikeService.addNewBike(bike);

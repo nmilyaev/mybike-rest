@@ -1,15 +1,18 @@
 package com.bike.repository;
 
-import com.bike.model.MybikeUser;
+import com.bike.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
+import static com.bike.util.IntegrationTestUtil.aMybikeUser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,19 +22,21 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @DataJpaTest
-public class MybikeUserRepositoryIntegrationTest {
+@ExtendWith(MockitoExtension.class)
+public class UserRepositoryIntegrationTest {
     @Autowired
     private UserRepository repository;
-    private MybikeUser user;
+
+    private User user;
 
     @BeforeEach
     void setUp(){
-        user = MybikeUser.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password");
+        user = aMybikeUser();
     }
 
     @Test
     void shouldSaveUser() {
-        MybikeUser saved = repository.save(user);
+        User saved = repository.save(user);
         assertNotNull(saved.getId());
         assertThat(saved)
                 .usingRecursiveComparison()
@@ -41,10 +46,10 @@ public class MybikeUserRepositoryIntegrationTest {
     @Test
     @Transactional
     void shouldSaveAndLoadUser() {
-        MybikeUser saved = repository.save(user);
-        MybikeUser loaded = repository.getOne(saved.getId());
+        User saved = repository.save(user);
+        User loaded = repository.getReferenceById(saved.getId());
         assertNotNull(saved.getId());
-        assertThat(saved)
+        assertThat(loaded)
                 .usingRecursiveComparison()
                 .isEqualTo(user);
     }
@@ -52,9 +57,9 @@ public class MybikeUserRepositoryIntegrationTest {
     @Test
     @Transactional
     void shouldDeleteUser() {
-        MybikeUser saved = repository.save(user);
+        User saved = repository.save(user);
         repository.delete(saved);
-        Throwable exception = assertThrows(JpaObjectRetrievalFailureException.class, () -> repository.getOne(saved.getId()));
-        assertEquals("Unable to find com.bike.model.MybikeUser with id " + saved.getId(), exception.getCause().getMessage());
+        Throwable exception = assertThrows(JpaObjectRetrievalFailureException.class, () -> repository.getReferenceById(saved.getId()));
+        assertEquals("Unable to find com.bike.model.User with id " + saved.getId(), exception.getCause().getMessage());
     }
 }

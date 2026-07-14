@@ -10,6 +10,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import jakarta.persistence.EntityNotFoundException;
 
+import java.time.Instant;
+
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
@@ -17,17 +19,41 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class RestControllerExceptionHandler
         extends ResponseEntityExceptionHandler {
 
+    public record ErrorResponse(
+            Instant timestamp,
+            int status,
+            String error,
+            String message
+    ) {}
+
     @ExceptionHandler(value = {IllegalArgumentException.class})
     @ResponseStatus(BAD_REQUEST)
     @ResponseBody
-    protected ResponseEntity<Object> handleException(IllegalArgumentException ex) {
-        return new ResponseEntity<>(ex.getMessage(), BAD_REQUEST);
+    public ResponseEntity<Object> handleException(IllegalArgumentException ex) {
+        return new ResponseEntity<>(
+                new ErrorResponse(
+                        Instant.now(),
+                        BAD_REQUEST.value(),
+                        BAD_REQUEST.getReasonPhrase(),
+                        ex.getMessage()
+                ),
+                BAD_REQUEST
+        );
     }
 
     @ExceptionHandler({EntityNotFoundException.class, EmptyResultDataAccessException.class})
     @ResponseStatus(NOT_FOUND)
     @ResponseBody
     public ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException ex) {
-        return new ResponseEntity<>(ex.getMessage(), NOT_FOUND);
+        return new ResponseEntity<>(
+                new ErrorResponse(
+                        Instant.now(),
+                        NOT_FOUND.value(),
+                        NOT_FOUND.getReasonPhrase(),
+                        ex.getMessage()
+                ),
+                NOT_FOUND
+        );
     }
+
 }

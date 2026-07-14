@@ -7,13 +7,15 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 
+import static jakarta.persistence.GenerationType.SEQUENCE;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @EqualsAndHashCode(of = {"id"})
 @Builder
 @Entity(name = "BikeHire")
-@Table(name = "bike_hire")
+@Table(name = "bike_hire", schema = "mybike")
 public class BikeHire {
     @Transient
     private final int SCALE = 2;
@@ -21,7 +23,12 @@ public class BikeHire {
     private final RoundingMode ROUNDING_MODE = RoundingMode.CEILING;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = SEQUENCE, generator = "bike_hire_seq")
+    @SequenceGenerator(
+            name = "bike_hire_seq",
+            sequenceName = "mybike.bike_hire_seq",
+            allocationSize = 1
+    )
     @Column(name = "hire_id", updatable = false, nullable = false)
     private Long id;
 
@@ -45,7 +52,7 @@ public class BikeHire {
 
     @OneToOne
     @JoinColumn(name="borrower_id", nullable=false, foreignKey=@ForeignKey(name="bike_hire_borrower_id"))
-    private MybikeUser borrower;
+    private User borrower;
 
     public BigDecimal getDeposit() {
         return deposit.setScale(SCALE, ROUNDING_MODE);
@@ -55,7 +62,7 @@ public class BikeHire {
         return dailyRate.setScale(SCALE, ROUNDING_MODE);
     }
 
-    public BikeHire(Long id, BigDecimal deposit, BigDecimal dailyRate, LocalDate startDate, LocalDate endDate, Bike bike, MybikeUser borrower) {
+    public BikeHire(Long id, BigDecimal deposit, BigDecimal dailyRate, LocalDate startDate, LocalDate endDate, Bike bike, User borrower) {
         this.id = id;
         this.deposit = deposit;
         this.dailyRate = dailyRate;

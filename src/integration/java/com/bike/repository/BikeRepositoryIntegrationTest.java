@@ -1,16 +1,19 @@
 package com.bike.repository;
 
 import com.bike.model.Bike;
-import com.bike.model.MybikeUser;
+import com.bike.model.User;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 
+import static com.bike.util.IntegrationTestUtil.aMybikeUser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,16 +23,24 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @DataJpaTest
+@ExtendWith(MockitoExtension.class)
 public class BikeRepositoryIntegrationTest {
     @Autowired
     BikeRepository repository;
     @Autowired
     UserRepository userRepository;
 
-    @Test
-    void shouldSaveBike() {
-        MybikeUser user = MybikeUser.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password");
+    private User user;
+
+    @BeforeEach
+    public void setUp() {
+        user = aMybikeUser();
         userRepository.save(user);
+    }
+
+    @Test
+    public void shouldSaveBike() {
+
         Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
         Bike saved = repository.save(bike);
         assertNotNull(saved.getId());
@@ -41,25 +52,21 @@ public class BikeRepositoryIntegrationTest {
 
     @Test
     void shouldSaveAndLoadBike() {
-        MybikeUser user = MybikeUser.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password");
-        userRepository.save(user);
         Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
         Bike saved = repository.save(bike);
-        Bike loaded = repository.getOne(saved.getId());
+        Bike loaded = repository.getReferenceById(saved.getId());
         assertNotNull(saved.getId());
-        assertThat(saved)
+        assertThat(loaded)
                 .usingRecursiveComparison()
                 .isEqualTo(bike);
     }
 
     @Test
     void shouldDeleteBike() {
-        MybikeUser user = MybikeUser.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password");
-        userRepository.save(user);
         Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
         Bike saved = repository.save(bike);
         repository.delete(saved);
-        Throwable exception = assertThrows(JpaObjectRetrievalFailureException.class, () -> repository.getOne(saved.getId()));
+        Throwable exception = assertThrows(JpaObjectRetrievalFailureException.class, () -> repository.getReferenceById(saved.getId()));
         assertEquals("Unable to find com.bike.model.Bike with id " + saved.getId(), exception.getCause().getMessage());
     }
 }

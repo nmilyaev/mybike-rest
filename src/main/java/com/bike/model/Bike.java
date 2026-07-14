@@ -1,9 +1,6 @@
 package com.bike.model;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import jakarta.persistence.*;
@@ -13,10 +10,12 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(of = {"id"})
 @Entity(name = "Bike")
-@Table(name = "bike")
+@Table(name = "bike", schema = "mybike")
 public class Bike {
     @Transient
     private final int SCALE = 2;
@@ -38,7 +37,7 @@ public class Bike {
     @Column(name = "model", length = 100)
     private String model;
 
-    @Column(name = "value", precision = 8, scale = 2)
+    @Column(name = "worth", precision = 8, scale = 2)
     private BigDecimal value;
 
     @Column(name = "deposit", precision = 8, scale = 2)
@@ -49,14 +48,14 @@ public class Bike {
 
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false, foreignKey = @ForeignKey(name = "bike_owner_id"))
-    private MybikeUser owner;
+    private User owner;
 
-    public Bike(UUID id, String make, String model, BigDecimal value, MybikeUser user) {
+    public Bike(UUID id, String make, String model, BigDecimal value, User user) {
         this(make, model, value, user);
         this.id = id;
     }
 
-    public Bike(String make, String model, BigDecimal value, MybikeUser user) {
+    public Bike(String make, String model, BigDecimal value, User user) {
         this.make = make;
         this.model = model;
         this.value = value;

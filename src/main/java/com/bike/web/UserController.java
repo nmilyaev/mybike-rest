@@ -1,9 +1,11 @@
 package com.bike.web;
 
-import com.bike.model.MybikeUser;
+import com.bike.dto.UserDto;
+import com.bike.model.User;
 import com.bike.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,18 +23,19 @@ public class UserController {
     }
 
     @GetMapping
-    public List<MybikeUser> getUserList() {
-        return userService.getAll();
+    public ResponseEntity<List<UserDto>> getUserList() {
+        return ResponseEntity.ok(userService.getAll().stream().map(UserDto::fromEntity).toList());
     }
 
     @GetMapping(value = "/{userId}")
-    public MybikeUser getUser(@PathVariable UUID userId) {
-        return userService.getById(userId);
+    public ResponseEntity<User> getUser(@PathVariable UUID userId) {
+        return ResponseEntity.ok(userService.getById(userId));
     }
 
-    @PostMapping(value = "/createUser", consumes = "application/json", produces = "application/json")
-    public MybikeUser createUser(@RequestBody MybikeUser user) {
-        return userService.createUser(user);
+    @PostMapping(value = "/create", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<UserDto> createUser(@RequestBody UserDto user) {
+        var newUser = userService.createUser(user.toEntity());
+        return ResponseEntity.ok(UserDto.fromEntity(newUser));
     }
 
     @DeleteMapping(value = "/{userId}")

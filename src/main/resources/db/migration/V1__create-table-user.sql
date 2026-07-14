@@ -1,4 +1,4 @@
-create table if not exists mybike_user (
+create table if not exists mybike.mybike_user (
     user_id uuid not null,
     firstname varchar(50) not null,
     surname varchar(50) not null,

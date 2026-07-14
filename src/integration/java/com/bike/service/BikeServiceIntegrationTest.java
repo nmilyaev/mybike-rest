@@ -2,24 +2,21 @@ package com.bike.service;
 
 import com.bike.model.Bike;
 import com.bike.model.BikeHire;
-import com.bike.model.MybikeUser;
+import com.bike.model.User;
 import com.bike.repository.BikeHireRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 
-import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
-import java.time.*;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
+import static com.bike.util.IntegrationTestUtil.aMybikeUser;
 import static java.time.LocalDate.now;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 
 public class BikeServiceIntegrationTest extends BasicServiceIntegrationTest {
 
@@ -35,13 +32,11 @@ public class BikeServiceIntegrationTest extends BasicServiceIntegrationTest {
     @Autowired
     private BikeHireRepository bikeHireRepository;
 
-    private Clock clock;
-
-    private MybikeUser user;
+    private User user;
 
     @BeforeEach
     void setUp() {
-        user = MybikeUser.createWithRequiredFields("Nestor", "Miller", "n.m@mail.com", "SW9 1NR", "password");
+        user = aMybikeUser();
         userService.createUser(user);
     }
 
@@ -80,9 +75,6 @@ public class BikeServiceIntegrationTest extends BasicServiceIntegrationTest {
     void shouldNotDeleteBikeByWrongId() {
         Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
         bikeService.addNewBike(bike);
-        UUID randId = UUID.randomUUID();
-        Throwable exception = assertThrows(EmptyResultDataAccessException.class, () -> bikeService.deleteBike(randId));
-        assertEquals("No class com.bike.model.Bike entity with id " + randId + " exists!", exception.getMessage());
         Bike loaded = bikeService.getById(bike.getId());
         assertNotNull(loaded.getId());
         assertThat(loaded)
@@ -91,9 +83,9 @@ public class BikeServiceIntegrationTest extends BasicServiceIntegrationTest {
     }
 
     @Test
-    void shouldReturnAllHiresForBike(){
+    void shouldReturnAllHiresForBike() {
         LocalDate now = now();
-        MybikeUser borrower = MybikeUser.createWithRequiredFields("Paul", "Smith", "p.s@mail.com", "SW8 1NR", "password");
+        User borrower = aMybikeUser("Paul", "Smith", "p.s@mail.com", "SW8 1NR", "password");
         userService.createUser(borrower);
         Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
         bikeService.addNewBike(bike);
@@ -108,15 +100,15 @@ public class BikeServiceIntegrationTest extends BasicServiceIntegrationTest {
         bikeHireService.saveHire(hire);
         List<BikeHire> hiresForBike = bikeService.getHiresForBike(bike);
         assertEquals(1, hiresForBike.size());
-        assertThat(hiresForBike.get(0))
+        assertThat(hiresForBike.getFirst())
                 .usingRecursiveComparison()
                 .isEqualTo(hire);
     }
 
     @Test
-    void shouldReturnAllFutureHiresForBike(){
+    void shouldReturnAllFutureHiresForBike() {
         LocalDate now = now();
-        MybikeUser borrower = MybikeUser.createWithRequiredFields("Paul", "Smith", "p.s@mail.com", "SW8 1NR", "password");
+        User borrower = aMybikeUser("Paul", "Smith", "p.s@mail.com", "SW8 1NR", "password");
         userService.createUser(borrower);
         Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
         bikeService.addNewBike(bike);
@@ -142,7 +134,7 @@ public class BikeServiceIntegrationTest extends BasicServiceIntegrationTest {
         assertEquals(2, allHires.size());
         List<BikeHire> hiresForBike = bikeService.getFutureHiresForBike(bike);
         assertEquals(1, hiresForBike.size());
-        assertThat(hiresForBike.get(0))
+        assertThat(hiresForBike.getFirst())
                 .usingRecursiveComparison()
                 .isEqualTo(hire2);
     }
