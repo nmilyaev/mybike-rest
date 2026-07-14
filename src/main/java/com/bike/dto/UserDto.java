@@ -2,12 +2,14 @@ package com.bike.dto;
 
 import com.bike.model.User;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import lombok.*;
 
 import java.util.UUID;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+import static com.fasterxml.jackson.annotation.JsonProperty.Access.WRITE_ONLY;
 
 @Getter
 @Setter
@@ -27,7 +29,7 @@ public class UserDto {
     protected String city;
     protected String email;
     protected String phone;
-    // TODO - do not expose password in JSON : @JsonProperty(access = WRITE_ONLY)
+    @JsonProperty(access = WRITE_ONLY)
     protected String password;
 
     public static UserDto fromEntity(User user) {
@@ -49,18 +51,17 @@ public class UserDto {
     }
 
     public User toEntity() {
-        User user = new User();
-
-        user.setId(this.id);
-        user.setFirstname(this.firstname);
-        user.setSurname(this.surname);
-        user.setAddress(this.address);
-        user.setPostcode(this.postcode);
-        user.setCity(this.city);
-        user.setEmail(this.email);
-        user.setPhone(this.phone);
-        user.setPassword(this.password);
-        return user;
+        return User.builder()
+                .id(this.id)
+                .firstname(this.firstname)
+                .surname(this.surname)
+                .address(this.address)
+                .postcode(this.postcode)
+                .city(this.city)
+                .email(this.email)
+                .phone(this.phone)
+                .password(this.password)
+                .build();
     }
 }
 

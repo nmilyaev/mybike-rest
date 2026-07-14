@@ -85,7 +85,7 @@ public class BikeServiceIntegrationTest extends BasicServiceIntegrationTest {
     @Test
     void shouldReturnAllHiresForBike() {
         LocalDate now = now();
-        User borrower = aMybikeUser("Paul", "Smith", "p.s@mail.com", "SW8 1NR", "password");
+        User borrower = aMybikeUser("Paul", "Smith", "p.s@mail.com", "5 Brockwell park", "SW8 1NR", "London", "07777777777", "password");
         userService.createUser(borrower);
         Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
         bikeService.addNewBike(bike);
@@ -108,7 +108,7 @@ public class BikeServiceIntegrationTest extends BasicServiceIntegrationTest {
     @Test
     void shouldReturnAllFutureHiresForBike() {
         LocalDate now = now();
-        User borrower = aMybikeUser("Paul", "Smith", "p.s@mail.com", "SW8 1NR", "password");
+        User borrower = aMybikeUser("Paul", "Smith", "p.s@mail.com", "5 Brockwell park", "SW8 1NR", "London", "07777777777", "password");
         userService.createUser(borrower);
         Bike bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), user);
         bikeService.addNewBike(bike);

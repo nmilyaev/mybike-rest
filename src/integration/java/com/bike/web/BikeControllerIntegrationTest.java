@@ -48,6 +48,7 @@ class BikeControllerIntegrationTest extends AbstractControllerIntegrationTest {
         assertNotNull(restBike.getId());
         assertThat(restBike)
                 .usingRecursiveComparison()
+                .ignoringFields("owner.password")
                 .isEqualTo(bike);
     }
 
@@ -59,6 +60,7 @@ class BikeControllerIntegrationTest extends AbstractControllerIntegrationTest {
         BikeDto restBike = response.getBody();
         assertThat(restBike)
                 .usingRecursiveComparison()
+                .ignoringFields("owner.password")
                 .isEqualTo(bike);
     }
 
@@ -71,6 +73,7 @@ class BikeControllerIntegrationTest extends AbstractControllerIntegrationTest {
         BikeDto restBike = restBikes[0];
         assertThat(restBike)
                 .usingRecursiveComparison()
+                .ignoringFields("owner.password")
                 .isEqualTo(bike);
     }
 

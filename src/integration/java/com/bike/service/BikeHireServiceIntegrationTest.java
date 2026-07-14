@@ -36,7 +36,7 @@ public class BikeHireServiceIntegrationTest extends BasicServiceIntegrationTest 
         now = now();
         var owner = aMybikeUser();
         owner = userService.createUser(owner);
-        borrower = aMybikeUser("Paul", "Smith", "p.s@mail.com", "SW8 1NR", "password");
+        borrower = aMybikeUser("Paul", "Smith", "p.s@mail.com", "5 Brockwell park", "SW8 1NR", "London", "07777777777", "password");
         userService.createUser(borrower);
         bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), owner);
         bikeService.addNewBike(bike);

@@ -89,7 +89,7 @@ public class UserServiceIntegrationTest extends BasicServiceIntegrationTest {
     void shouldSaveAndFetchAllUsers() {
         var saved1 = userService.createUser(user);
         assertNotNull(saved1.getId());
-        user = aMybikeUser("Nick", "Mills", "n.n@mail.com", "SW9 1NR", "password");
+        user = aMybikeUser("Nick", "Mills", "n.n@mail.com", "10 Kyiv avenue", "SW9 1NR", "London", "07777777777", "password");
         user.setEmail("m.n@mail.com");
         assertNull(user.getId());
         User saved2 = userService.createUser(user);
@@ -126,7 +126,7 @@ public class UserServiceIntegrationTest extends BasicServiceIntegrationTest {
         LocalDate now = now();
         var owner = aMybikeUser();
         userService.createUser(owner);
-        var borrower = aMybikeUser("Paul", "Smith", "p.s@mail.com", "SW8 1NR", "password");
+        var borrower = aMybikeUser("Paul", "Smith", "p.s@mail.com", "5 Brockwell park", "SW8 1NR", "London", "07777777777", "password");
         userService.createUser(borrower);
         var bike = new Bike("Raleigh", "Pioneer", BigDecimal.valueOf(80.00), owner);
         bikeService.addNewBike(bike);

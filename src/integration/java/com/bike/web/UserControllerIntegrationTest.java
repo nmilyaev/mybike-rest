@@ -7,11 +7,13 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 
 import java.net.URI;
 import java.util.UUID;
 
+import static com.bike.util.IntegrationTestUtil.createUserRequest;
 import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,27 +28,32 @@ public class UserControllerIntegrationTest extends AbstractControllerIntegration
     @Test
     @SneakyThrows
     void shouldCreateUser() {
-        ResponseEntity<UserDto> response = restTemplate.postForEntity("http://localhost:" + serverPort + "/user/create", userDto,
-                UserDto.class);
+        HttpEntity<String> request = createUserRequest(userDto);
+        ResponseEntity<UserDto> response =
+                restTemplate.postForEntity("http://localhost:" + serverPort + "/user/create",
+                        request,
+                        UserDto.class);
         assertEquals(OK, response.getStatusCode());
-        UserDto restUser = response.getBody();
+        UserDto restUser = requireNonNull(response.getBody());
         user.setId(requireNonNull(restUser).getId());
         assertNotNull(restUser.getId());
         assertThat(restUser)
                 .usingRecursiveComparison()
+                .ignoringFields("password")
                 .isEqualTo(user);
     }
 
     @Test
     void shouldNotCreateUserWithDuplicateEmail() {
+        HttpEntity<String> request = createUserRequest(userDto);
         // First creation should succeed
-        ResponseEntity<UserDto> firstResponse = restTemplate.postForEntity("http://localhost:" + serverPort + "/user/create", userDto,
+        ResponseEntity<UserDto> firstResponse = restTemplate.postForEntity("http://localhost:" + serverPort + "/user/create", request,
                 UserDto.class);
         assertEquals(OK, firstResponse.getStatusCode());
         assertNotNull(firstResponse.getBody().getId());
 
         // Second creation with the same email should fail with CONFLICT (409)
-        ResponseEntity<UserDto> secondResponse = restTemplate.postForEntity("http://localhost:" + serverPort + "/user/create", userDto,
+        ResponseEntity<UserDto> secondResponse = restTemplate.postForEntity("http://localhost:" + serverPort + "/user/create", request,
                 UserDto.class);
         assertEquals(BAD_REQUEST, secondResponse.getStatusCode());
     }
@@ -60,6 +67,7 @@ public class UserControllerIntegrationTest extends AbstractControllerIntegration
         UserDto restUser = restUsers[0];
         assertThat(restUser)
                 .usingRecursiveComparison()
+                .ignoringFields("password")
                 .isEqualTo(user);
     }
 
