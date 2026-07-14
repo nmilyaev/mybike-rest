@@ -18,19 +18,16 @@ import org.springframework.test.context.ActiveProfiles;
 @ExtendWith(MockitoExtension.class)
 public class BasicServiceIntegrationTest {
 
-    @Autowired
-    private UserRepository userRepository;
+  @Autowired private UserRepository userRepository;
 
-    @Autowired
-    private BikeRepository bikeRepository;
+  @Autowired private BikeRepository bikeRepository;
 
-    @Autowired
-    private BikeHireRepository bikeHireRpository;
+  @Autowired private BikeHireRepository bikeHireRpository;
 
-    @AfterEach
-    void cleanUp() {
-        bikeHireRpository.deleteAll();
-        bikeRepository.deleteAll();
-        userRepository.deleteAll();
-    }
+  @AfterEach
+  void cleanUp() {
+    bikeHireRpository.deleteAll();
+    bikeRepository.deleteAll();
+    userRepository.deleteAll();
+  }
 }

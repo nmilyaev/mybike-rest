@@ -1,48 +1,44 @@
 package com.bike.web;
 
+import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.OK;
+
 import com.bike.dto.BikeDto;
 import com.bike.service.BikeService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.UUID;
-
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.NO_CONTENT;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/bike")
 public class BikeController {
-    private final BikeService bikeService;
+  private final BikeService bikeService;
 
-    @GetMapping
-    public ResponseEntity<List<BikeDto>> getBikesList() {
-        return ResponseEntity.ok(bikeService.getList().stream().map(BikeDto::fromEntity).toList());
-    }
+  @GetMapping(value = "/{bikeId}")
+  @ResponseStatus(OK)
+  public BikeDto getBike(@PathVariable UUID bikeId) {
+    return BikeDto.fromEntity(bikeService.getById(bikeId));
+  }
 
-    @GetMapping(value = "/{bikeId}")
-    public ResponseEntity<BikeDto> getBikes(@PathVariable UUID bikeId) {
-        return ResponseEntity.ok(BikeDto.fromEntity(bikeService.getById(bikeId)));
-    }
+  @GetMapping
+  @ResponseStatus(OK)
+  public List<BikeDto> getBikesList() {
+    return bikeService.getList().stream().map(BikeDto::fromEntity).toList();
+  }
 
-    @PostMapping(value = "/createBike", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<BikeDto> createBike(@RequestBody BikeDto bikeDto) {
-        return ResponseEntity.ok(BikeDto.fromEntity(bikeService.addNewBike(bikeDto.toEntity())));
-    }
+  @PostMapping(value = "/createBike", consumes = "application/json", produces = "application/json")
+  @ResponseStatus(CREATED)
+  public BikeDto createBike(@RequestBody BikeDto bikeDto) {
+    var bike = bikeDto.toEntity();
+    var savedBike = bikeService.addNewBike(bike);
+    return BikeDto.fromEntity(savedBike);
+  }
 
-    @DeleteMapping(value = "/{bikeId}")
-    public ResponseEntity<Boolean> deleteBike(@PathVariable UUID bikeId) {
-        // TODO - add proper exception handler
-        try {
-            bikeService.deleteBike(bikeId);
-            return new ResponseEntity<>(NO_CONTENT);
-        } catch (Exception ex) {
-            return new ResponseEntity<>(NOT_FOUND);
-        }
-    }
+  @DeleteMapping(value = "/{bikeId}")
+  @ResponseStatus(NO_CONTENT)
+  public void deleteBike(@PathVariable UUID bikeId) {
+    bikeService.deleteBike(bikeId);
+  }
 }
-
-
